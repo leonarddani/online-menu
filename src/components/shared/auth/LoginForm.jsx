@@ -26,9 +26,34 @@ const LoginForm = () => {
         resolver: zodResolver(formSchema),
     });
     
-    function onSubmit(values) {
-        console.log(values)
+    const onSubmit = async (values) => {
+        try {
+          const response = await fetch("http://localhost:8095/api/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(values),
+          });
+      
+          if (!response.ok) {
+            const errorData = await response.json();
+            setErrorMessage(errorData.message || "Failed to login");
+            return; // dil që këtu nëse ka error
+          }
+         const responseData = await response.json();
+
+        localStorage.setItem("token", responseData.token);
+        localStorage.setItem("user", JSON.stringify (responseData.user));
+         
+        dispatch(login(responseData.user));
+        toast("welcome back",{description: "you have been loged in sucesfuly"});
+        navigate("/overview");
+        } catch (error) {
+          setErrorMessage(error.message || "Something went wrong!");
+
         }
+      };
 
   return (
     <Form {...form}>

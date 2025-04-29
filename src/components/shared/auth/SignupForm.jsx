@@ -32,10 +32,38 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
-  function onSubmit(values) {
-
-    console.log(values);
-  }
+  const onSubmit = async (values) => {
+    try {
+      const response = await fetch('http://localhost:8095/api/auth/register', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+  
+     
+      
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.message || "Registration failed");
+      }
+  
+      toast.success("Account created", {
+        description: "You have been registered successfully. Please login.",
+        action: {
+          label: "Login",
+          onClick: () => navigate("/login"),
+        },
+      });
+    } catch (error) {
+      toast.error("Registration Failed", {
+        description: error.message,
+      });
+    }
+  };
   
 
 

@@ -1,4 +1,4 @@
-import SignupForm from "@/components/shared/SignupForm"
+import SignupForm from "@/components/shared/auth/SignupForm"
 import Aside from "@/components/Aside";
 
 const SignupPage = () => {
