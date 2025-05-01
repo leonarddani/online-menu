@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+// Validation schema
 const formSchema = z
   .object({
     name: z.string().min(2, { message: "Name must be at least 2 characters" }),
@@ -25,11 +26,27 @@ const formSchema = z
     password: z
       .string()
       .min(6, { message: "Password must be at least 6 characters" }),
-    confirmPassword: z.string().min(6, { message: "Password don't match" }),
+    confirmPassword: z
+      .string()
+      .min(6, { message: "Password don't match" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Password don't match",
+    message: "Passwords don't match",
     path: ["confirmPassword"],
+  });
+
+const SignupForm = () => {
+  const navigate = useNavigate();
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
   const onSubmit = async (values) => {
@@ -65,27 +82,11 @@ const formSchema = z
     }
   };
   
-
-
-const SignupForm = () => {
-      const form = useForm({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-          username: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-        },
-      });
-      
-      const handleButtonClick = e => {
-        alert('You are now submited!')
-      }
+  
   return (
     <div className="m-auto">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <div>
             <h1 className="text-slate-900 font-bold text-2xl mb-1">
               Create an account
@@ -94,11 +95,12 @@ const SignupForm = () => {
               Enter your email below to create your account
             </p>
           </div>
+
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem className="w-sm ">
+              <FormItem className="w-sm">
                 <FormLabel>Full Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter your full name" {...field} />
@@ -107,6 +109,7 @@ const SignupForm = () => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="username"
@@ -120,6 +123,7 @@ const SignupForm = () => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="email"
@@ -129,7 +133,7 @@ const SignupForm = () => {
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="Enter Your email"
+                    placeholder="Enter your email"
                     {...field}
                   />
                 </FormControl>
@@ -137,6 +141,7 @@ const SignupForm = () => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="password"
@@ -150,6 +155,7 @@ const SignupForm = () => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="confirmPassword"
@@ -163,7 +169,11 @@ const SignupForm = () => {
               </FormItem>
             )}
           />
-          <Button onClick={handleButtonClick} type="submit" className=" mt-10 cursor-pointer bg-slate-900 text-white w-96">
+
+          <Button
+            type="submit"
+            className="mt-10 cursor-pointer bg-slate-900 text-white w-96"
+          >
             Submit
           </Button>
         </form>

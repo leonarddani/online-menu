@@ -1,9 +1,11 @@
-import React from 'react'
+import { useState } from "react";
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-
+import {useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { Button } from "@/components/ui/button"
+import { login } from "@/store/authSlice";
 import {
   Form,
   FormControl,
@@ -13,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-
+import { toast } from "sonner";
 
 const formSchema = z.object({
     email: z.string().email({message: "Please enter a valid email address."}),
@@ -21,12 +23,16 @@ const formSchema = z.object({
     });
 
 const LoginForm = () => {
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [errorMessage, setErrorMessage] = useState(null);
     const form = useForm({
         resolver: zodResolver(formSchema),
+        
     });
     
     const onSubmit = async (values) => {
+
         try {
           const response = await fetch("http://localhost:8095/api/auth/login", {
             method: "POST",
@@ -91,7 +97,9 @@ const LoginForm = () => {
                 </FormItem>
             )}
             />
-
+              {errorMessage && (
+                    <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+                )}
             <Button type="submit" className="bg-green-900 cursor-pointer text-white" >Submit</Button>
         </form>
         </Form>

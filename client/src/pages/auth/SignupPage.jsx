@@ -1,5 +1,5 @@
 import SignupForm from "@/components/shared/auth/SignupForm"
-import Aside from "@/components/Aside";
+import Aside from "@/components/shared/auth/Aside";
 
 const SignupPage = () => {
   return (
