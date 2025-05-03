@@ -1,8 +1,8 @@
 // src/components/Navbar.jsx
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import bird from '../img/bird.png';
-import NavbarButton from './NavbarButton';
+import bird from '../../../assets/img/bird.png';
+import NavbarButton from '../navbar/NavbarButton';
 
 const Navbar = () => {
   const mainLinks = [
@@ -10,10 +10,7 @@ const Navbar = () => {
     { path: "/table", label: "Table" },
   ];
 
-  const authLinks = [
-    { path: "/auth/login", label: "Login" },
-    { path: "/auth/register", label: "Register" },
-  ];
+ 
 
   return (
     <nav className="bg-green-900 text-black px-6 py-4">
@@ -48,24 +45,6 @@ const Navbar = () => {
             ))}
           </ul>
 
-          {/* Auth links (right side) */}
-          <ul className="flex gap-4">
-            {authLinks.map((link) => (
-              <li key={link.path}>
-                <NavLink
-                  to={link.path}
-                  className={({ isActive }) =>
-                    isActive
-                      ? "text-yellow-600 font-semibold"
-                      : "text-gray-300 font-normal hover:text-white"
-                  }
-                >
-                  {link.label}
-                </NavLink>
-        
-              </li>
-            ))}
-          </ul>
         </div>
         <NavbarButton />
       </div>

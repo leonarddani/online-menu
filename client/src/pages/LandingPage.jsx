@@ -11,9 +11,10 @@ import Navbar from '@/components/shared/navbar/Navbar';
 
 export const LandingPage = () => {
   return (
-
+         
    
     <main className="pt-20 bg-green-900 h-screen">
+          <Navbar/>
     <div className='px-12 mx-auto max-w-7xl'>
         <div className='w-full mx-auto text-left md:w-11/12 xl:w-9/12 md:text-center'>
             <h1 className='mb-8 font-bold leading-none tracking-normal text-slate-800 md:text-6xl text-4xl md:tracking-tight'>
@@ -39,7 +40,7 @@ export const LandingPage = () => {
         <img src ={imgLanding} alt="Landing" className='w-70 h-90 mt-10 rounded-lg shadow-lg' />
         <img src ={lanimg} alt="Landing" className='w-70 h-90 mt-10 rounded-lg shadow-lg' />
         </div>
-        <Navbar />
+  
     </div>
     
 </main>               
