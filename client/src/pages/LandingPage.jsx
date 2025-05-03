@@ -6,10 +6,13 @@ import imgLanding from "@/assets/img/img-landing1.avif";
 import landingImg from "@/assets/img/img-landing2.avif";
 import imglan  from "@/assets/img/img-landing3.avif";
 import lanimg  from "@/assets/img/img-landing4.avif";
+import Navbar from '@/components/shared/navbar/Navbar';
 
 
 export const LandingPage = () => {
   return (
+
+   
     <main className="pt-20 bg-green-900 h-screen">
     <div className='px-12 mx-auto max-w-7xl'>
         <div className='w-full mx-auto text-left md:w-11/12 xl:w-9/12 md:text-center'>
@@ -36,7 +39,9 @@ export const LandingPage = () => {
         <img src ={imgLanding} alt="Landing" className='w-70 h-90 mt-10 rounded-lg shadow-lg' />
         <img src ={lanimg} alt="Landing" className='w-70 h-90 mt-10 rounded-lg shadow-lg' />
         </div>
+        <Navbar />
     </div>
+    
 </main>               
   )
 }
