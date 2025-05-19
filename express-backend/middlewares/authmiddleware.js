@@ -18,4 +18,16 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
+//allow accces based on user roles 
+const restrictTo = (allowedRoles) => (req, res, next) => {
+  if (!req.user || !req.user.role) {
+    return res.status(401).json({ message: "Authentication required" });
+  }
+  if (!allowedRoles.includes(req.user.role)) {
+    return res.status(403).json({ message: `Access denied: requires one of ${allowedRoles.join(", ")} roles` });
+  }
+  next();
+};
+
+
 module.exports = authMiddleware;

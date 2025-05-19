@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "init-db": "node scripts/init-db.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,6 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.10",
-    "pg": "^8.15.6"
+    "pg": "^8.16.0"
   }
 }
