@@ -7,6 +7,9 @@ import landingImg from "@/assets/img/img-landing2.avif";
 import imglan  from "@/assets/img/img-landing3.avif";
 import lanimg  from "@/assets/img/img-landing4.avif";
 import Navbar from '@/components/shared/navbar/Navbar';
+import Sidebar from '@/components/shared/navbar/SideBar';
+import TablesList from '@/components/shared/dashboard/TablesList';
+import TableOrderPage from '@/components/shared/dashboard/waiter/TableOrderPage';
 
 
 export const LandingPage = () => {
@@ -40,7 +43,8 @@ export const LandingPage = () => {
         <img src ={imgLanding} alt="Landing" className='w-70 h-90 mt-10 rounded-lg shadow-lg' />
         <img src ={lanimg} alt="Landing" className='w-70 h-90 mt-10 rounded-lg shadow-lg' />
         </div>
-  
+       <Sidebar role={"manager"}/>
+       <TableOrderPage/>
     </div>
     
 </main>               
