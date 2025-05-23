@@ -1,6 +1,6 @@
 // middlewares/roleAuth.js
 const restrictTo = (allowedRoles) => (req, res, next) => {
-  console.log("🔍 restrictTo middleware — req.user:", req.user);
+  console.log(" restrictTo middleware — req.user:", req.user);
 
   if (!req.user || !req.user.role) {
     return res.status(401).json({ message: "Authentication required" });

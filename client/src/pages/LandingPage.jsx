@@ -8,7 +8,7 @@ import imglan  from "@/assets/img/img-landing3.avif";
 import lanimg  from "@/assets/img/img-landing4.avif";
 import Navbar from '@/components/shared/navbar/Navbar';
 import Sidebar from '@/components/shared/navbar/SideBar';
-import TablesList from '@/components/shared/dashboard/TablesList';
+
 import TableOrderPage from '@/components/shared/dashboard/waiter/TableOrderPage';
 
 
