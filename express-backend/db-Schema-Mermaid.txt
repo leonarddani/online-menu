@@ -1,0 +1,82 @@
+erDiagram
+    users ||--o{ orders : places
+    users ||--o{ bookings : makes
+    users ||--o{ ratings : submits
+    tables ||--o{ orders : hosts
+    tables ||--o{ bookings : reserved_for
+    menu_items ||--o{ order_items : includes
+    orders ||--o{ order_items : contains
+    orders ||--o{ ratings : rated
+
+    users {
+        int id PK
+        varchar name
+        varchar email UK
+        varchar password
+        varchar role
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    tables {
+        int id PK
+        int table_number UK
+        int capacity
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    menu_items {
+        int id PK
+        varchar name
+        text description
+        decimal price
+        varchar category
+        text image_url
+        boolean is_available
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    orders {
+        int id PK
+        int user_id FK
+        int table_id FK
+        decimal total_amount
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    order_items {
+        int id PK
+        int order_id FK
+        int menu_item_id FK
+        int quantity
+        text notes
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    bookings {
+        int id PK
+        int user_id FK
+        int table_id FK
+        timestamp booking_date
+        int party_size
+        text special_requests
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    ratings {
+        int id PK
+        int user_id FK
+        int order_id FK
+        int rating
+        text comment
+        timestamp created_at
+        timestamp updated_at
+    }

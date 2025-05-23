@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const authRoutes = require("./routes/auth");
-const departmentsRoutes = require("./routes/departments");
+const tablesRoutes = require("./routes/tables");
 
 const app = express();
 
@@ -15,7 +15,7 @@ app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
-app.use("/api/departments", departmentsRoutes);
+app.use("/api/tables", tablesRoutes);
 
 const PORT = process.env.PORT || 8095;
 
