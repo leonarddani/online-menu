@@ -43,7 +43,7 @@ router.post('/:id/free', async (req, res) => {
     await pool.query('UPDATE tables SET status = $1 WHERE id = $2', ['available', id]);
 
     // Optionally, update the order status to "completed" if the table had an ongoing order
-    await pool.query('UPDATE orders SET status = $1 WHERE table_id = $2 AND status = $3', ['completed', id, 'pending']);
+    await pool.query('UPDATE orders SET status = $1 WHERE t = $2 AND status = $3', ['completed', id, 'pending']);
 
     res.json({
       message: `Table ${id} is now available`,
@@ -68,7 +68,7 @@ router.put('/api/tables/:id/status', async (req, res) => {
   try {
     await pool.query('UPDATE tables SET status = $1 WHERE id = $2', [status, id]);
     res.json({ message: `Table ${id} status updated to ${status}` });
-  } catch (err) {
+  } catch (err) {able_id
     res.status(500).json({ error: err.message });
   }
 });

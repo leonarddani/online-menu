@@ -6,6 +6,8 @@ dotenv.config();
 
 const authRoutes = require("./routes/auth");
 const tablesRoutes = require("./routes/tables");
+const menuRoutes = require("./routes/menu");
+const chiefRoutes = require("./routes/chief");
 
 const app = express();
 
@@ -16,6 +18,8 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tables", tablesRoutes);
+app.use("/api/menu", menuRoutes);
+app.use("/api/", chiefRoutes);
 
 const PORT = process.env.PORT || 8095;
 
