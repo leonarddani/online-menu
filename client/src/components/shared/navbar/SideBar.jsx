@@ -1,6 +1,6 @@
-import { useSelector } from "react-redux"; // 👈 Import selector
+import { useSelector } from "react-redux";
 import { useState, useMemo } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, matchPath } from "react-router-dom";
 import {
   BookOpenCheck,
   ChefHat,
@@ -25,7 +25,6 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  // ✅ Read the role from Redux store
   const user = useSelector((state) => state.auth.user);
   const role = user?.role;
 
@@ -41,6 +40,7 @@ export default function Sidebar() {
       label: "Dashboard",
       icon: LayoutDashboard,
       href: `/dashboard/${role}`,
+      exact: true, // custom prop to require exact match
     },
     {
       label: "Settings",
@@ -57,7 +57,7 @@ export default function Sidebar() {
       { label: "Bookings", icon: BookOpenCheck, href: "/dashboard/manager/bookings" },
     ],
     waiter: [
-      { label: "Tables", icon: Store, href: "/dashboard/waiter/tables" },
+      // { label: "Tables", icon: Store, href: "/dashboard/waiter/tables" },
       { label: "Orders", icon: ClipboardList, href: "/dashboard/waiter/orders" },
     ],
     chef: [
@@ -74,10 +74,21 @@ export default function Sidebar() {
 
   const routes = useMemo(() => {
     const allRoutes = [...baseRoutes, ...(roleRoutes[role] || [])];
-    return allRoutes.map((route) => ({
-      ...route,
-      active: location.pathname.startsWith(route.href),
-    }));
+    return allRoutes.map((route) => {
+      // matchPath options
+      const match = matchPath(
+        {
+          path: route.href,
+          end: route.exact || false,
+        },
+        location.pathname
+      );
+
+      return {
+        ...route,
+        active: Boolean(match),
+      };
+    });
   }, [role, location.pathname]);
 
   const SidebarLinks = ({ onClick }) => (

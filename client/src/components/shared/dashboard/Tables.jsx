@@ -27,6 +27,7 @@ import {
 import { ClipboardList, QrCode, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import Navbar from "../navbar/Navbar";
 
 // Mapping room IDs to names
 const roomNames = {
@@ -144,7 +145,7 @@ const TablesPage = () => {
           <p className="text-muted-foreground">Manage tables and take orders</p>
         </div>
       </div>
-
+      <Navbar/>
       <Tabs defaultValue="all">
         <TabsList>
           <TabsTrigger value="all">All Tables</TabsTrigger>

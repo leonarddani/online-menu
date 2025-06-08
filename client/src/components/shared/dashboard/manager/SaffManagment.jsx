@@ -1,0 +1,84 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  Table,
+  TableCaption,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableFooter,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+
+
+const SaffManagment = () => {
+  return (
+     <Card>
+            <CardHeader>
+              <CardTitle>Active Staff Members</CardTitle>
+              <CardDescription>Staff currently working at your restaurant</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Shift</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {activeStaff.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
+                        No active staff members
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    activeStaff.map((member) => (
+                      <TableRow key={member.id}>
+                        <TableCell className="font-medium">{member.name}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {member.role === "chef" ? <ChefHat className="h-4 w-4" /> : <Users className="h-4 w-4" />}
+                            <span>{member.role.charAt(0).toUpperCase() + member.role.slice(1)}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>{member.email}</TableCell>
+                        {/* <TableCell>{member.phone}</TableCell> */}
+                        {/* <TableCell>{member.shift}</TableCell> */}
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedStaff(member)
+                                setIsEditStaffOpen(true)
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                              <span className="sr-only">Edit</span>
+                            </Button>
+                            <Button variant="destructive" size="sm" onClick={() => handleDeleteStaff(member.id)}>
+                              <Trash className="h-4 w-4" />
+                              <span className="sr-only">Delete</span>
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+  )
+}
+
+export default SaffManagment

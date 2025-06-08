@@ -8,6 +8,7 @@ const authRoutes = require("./routes/auth");
 const tablesRoutes = require("./routes/tables");
 const menuRoutes = require("./routes/menu");
 const chiefRoutes = require("./routes/chief");
+const ordersRoutes = require("./routes/orders");
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/tables", tablesRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/", chiefRoutes);
+app.use("/api/orders", ordersRoutes);
 
 const PORT = process.env.PORT || 8095;
 

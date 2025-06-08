@@ -1,4 +1,4 @@
-import TablesPage from '@/components/shared/dashboard/waiter/Tables'
+import TablesPage from '@/components/shared/dashboard/Tables'
 import Layout from '@/components/shared/layouts/Layout'
 import React from 'react'
 

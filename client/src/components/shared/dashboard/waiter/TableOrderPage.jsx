@@ -28,7 +28,7 @@ export default function TableOrderPage() {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const response = await fetch("http://localhost:8095/api/menu/menu");
+        const response = await fetch("http://localhost:8095/api/menu/");
         if (!response.ok) throw new Error("Failed to fetch menu");
         const data = await response.json();
         setMenuItems(data);

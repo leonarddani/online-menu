@@ -6,7 +6,7 @@ const pool = require("../config/db");
 let carts = {};
 
 // --- GET menu items ---
-router.get("/menu", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const query = `
       SELECT id, name, description, price, category, image_url
