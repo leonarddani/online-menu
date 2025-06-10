@@ -6,9 +6,9 @@ dotenv.config();
 
 const authRoutes = require("./routes/auth");
 const tablesRoutes = require("./routes/tables");
-const menuRoutes = require("./routes/menu");
+const menuRoutesLeo = require("./routes/menu-leo");
 const chiefRoutes = require("./routes/chief");
-const ordersRoutes = require("./routes/orders");
+const ordersRoutesLeo = require("./routes/orders-leo");
 
 const app = express();
 
@@ -19,9 +19,9 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tables", tablesRoutes);
-app.use("/api/menu", menuRoutes);
+app.use("/api/menu", menuRoutesLeo);
 app.use("/api/", chiefRoutes);
-app.use("/api/orders", ordersRoutes);
+app.use("/api/orders", ordersRoutesLeo);
 
 const PORT = process.env.PORT || 8095;
 

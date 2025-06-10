@@ -26,7 +26,6 @@ router.post('/:id/free', async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Check if the table exists
     const tableResult = await pool.query('SELECT * FROM tables WHERE id = $1', [id]);
     if (tableResult.rows.length === 0) {
       return res.status(404).json({ error: 'Table not found' });
@@ -34,26 +33,27 @@ router.post('/:id/free', async (req, res) => {
 
     const table = tableResult.rows[0];
 
-    // If the table is already available, return an error
     if (table.status === 'available') {
       return res.status(400).json({ error: 'This table is already free' });
     }
 
-    // Update the table status to "available"
     await pool.query('UPDATE tables SET status = $1 WHERE id = $2', ['available', id]);
 
-    // Optionally, update the order status to "completed" if the table had an ongoing order
-    await pool.query('UPDATE orders SET status = $1 WHERE t = $2 AND status = $3', ['completed', id, 'pending']);
+    // ✅ Use the correct column name (assumed to be 'table_id')
+    await pool.query(
+      'UPDATE orders SET status = $1 WHERE table_id = $2 AND status = $3',
+      ['completed', id, 'pending']
+    );
 
     res.json({
       message: `Table ${id} is now available`,
       table_status: 'available'
     });
   } catch (err) {
+    console.error('Error freeing table:', err);
     res.status(500).json({ error: err.message });
   }
 });
-
 
 //Update table status (Free / Occupied)
 
