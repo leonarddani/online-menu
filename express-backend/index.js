@@ -6,9 +6,9 @@ dotenv.config();
 
 const authRoutes = require("./routes/auth");
 const tablesRoutes = require("./routes/tables");
-const menuRoutesLeo = require("./routes/menu");
+const menuRoutes = require("./routes/menu");
 const chiefRoutes = require("./routes/chief");
-const ordersRoutesLeo = require("./routes/orders");
+const ordersRoutes = require("./routes/orders");
 
 const app = express();
 
