@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,12 +15,24 @@ const roomNames = {
 };
 
 const TablesPage = () => {
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
+  const reqUserRole = user?.role || "waiter"; // Fallback to "waiter" if role is undefined
+
   const [tables, setTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState(null);
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
   const [guestCount, setGuestCount] = useState("2");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Redirect to login if user is not authenticated
+  useEffect(() => {
+    if (!user) {
+      toast.error("Please log in to access this page");
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
   // Fetch tables from API on mount
   useEffect(() => {
@@ -47,8 +61,10 @@ const TablesPage = () => {
       }
     };
 
-    fetchTables();
-  }, []);
+    if (user) {
+      fetchTables();
+    }
+  }, [user]);
 
   const availableTables = tables.filter((table) => table.status === "available");
   const occupiedTables = tables.filter((table) => table.status === "occupied");
@@ -62,7 +78,7 @@ const TablesPage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ user_id: 1, guests_seated: guestCount }),
+        body: JSON.stringify({ user_id: user?.id || 1, guests_seated: guestCount }),
       });
 
       if (!response.ok) throw new Error("Failed to seat guests");
@@ -104,6 +120,24 @@ const TablesPage = () => {
     }
   };
 
+  // Function to handle deleting a table
+  const handleDeleteTable = async (tableId) => {
+    try {
+      const response = await fetch(`http://localhost:8095/api/tables/${tableId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Failed to delete table");
+
+      setTables((prev) => prev.filter((table) => table.id !== tableId));
+
+      toast.success(`Table ${tableId} deleted successfully`);
+    } catch (error) {
+      toast.error("Error deleting table");
+      console.error(error);
+    }
+  };
+
   const openOrderDialog = (table) => {
     setSelectedTable(table);
     setIsOrderDialogOpen(true);
@@ -120,7 +154,7 @@ const TablesPage = () => {
           <p className="text-muted-foreground">Manage tables and take orders</p>
         </div>
       </div>
-     
+      
       <Tabs defaultValue="all">
         <TabsList>
           <TabsTrigger value="all">All Tables</TabsTrigger>
@@ -134,8 +168,10 @@ const TablesPage = () => {
             tables={tables}
             onSeatGuests={handleSeatGuests}
             onFreeTable={handleFreeTable}
+            onDeleteTable={handleDeleteTable}
             openOrderDialog={openOrderDialog}
             roomNames={roomNames}
+            reqUserRole={reqUserRole}
           />
         </TabsContent>
         <TabsContent value="available">
@@ -143,8 +179,10 @@ const TablesPage = () => {
             tables={availableTables}
             onSeatGuests={handleSeatGuests}
             onFreeTable={handleFreeTable}
+            onDeleteTable={handleDeleteTable}
             openOrderDialog={openOrderDialog}
             roomNames={roomNames}
+            reqUserRole={reqUserRole}
           />
         </TabsContent>
         <TabsContent value="occupied">
@@ -152,8 +190,10 @@ const TablesPage = () => {
             tables={occupiedTables}
             onSeatGuests={handleSeatGuests}
             onFreeTable={handleFreeTable}
+            onDeleteTable={handleDeleteTable}
             openOrderDialog={openOrderDialog}
             roomNames={roomNames}
+            reqUserRole={reqUserRole}
           />
         </TabsContent>
         <TabsContent value="reserved">
@@ -161,8 +201,10 @@ const TablesPage = () => {
             tables={reservedTables}
             onSeatGuests={handleSeatGuests}
             onFreeTable={handleFreeTable}
+            onDeleteTable={handleDeleteTable}
             openOrderDialog={openOrderDialog}
             roomNames={roomNames}
+            reqUserRole={reqUserRole}
           />
         </TabsContent>
       </Tabs>

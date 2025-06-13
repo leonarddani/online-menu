@@ -6,7 +6,7 @@ import {
   SidebarProvider,
 
 } from "@/components/ui/sidebar"
-import Sidebar from "../navbar/SideBar"
+import Sidebar from "../dashboard/Sidebar/SideBar"
 
 export default function Layout({children}) {
   return (

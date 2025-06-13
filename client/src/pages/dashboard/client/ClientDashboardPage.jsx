@@ -1,4 +1,4 @@
-import TablesPage from '@/components/shared/dashboard/Tables'
+import TablesPage from '@/pages/dashboard/TablesPage'
 import Layout from '@/components/shared/layouts/Layout'
 import React from 'react'
 

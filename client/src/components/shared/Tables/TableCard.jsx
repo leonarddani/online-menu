@@ -1,10 +1,10 @@
 import React from "react";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import {Button } from "@/components/ui/Button";
+import {Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import StatusBadge from "@/components/shared/Tables/StatusBadge";
+import StatusBadge from "./StatusBadge";
 
-function TableCard({ table, roomName, onSeatGuests, onFreeTable, openOrderDialog }) {
+function TableCard({ table, roomName, onSeatGuests, onFreeTable, onDeleteTable, openOrderDialog, reqUserRole }) {
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -27,19 +27,31 @@ function TableCard({ table, roomName, onSeatGuests, onFreeTable, openOrderDialog
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        {table.status === "available" ? (
-          <Button onClick={() => openOrderDialog(table)}>Seat Guests</Button>
-        ) : table.status === "occupied" ? (
-          <>
-            <Button variant="outline" onClick={() => onFreeTable(table.id)}>
-              Free Table
-            </Button>
-            <Button asChild>
-              <Link to={`/dashboard/waiter/tables/${table.number}`}>Take Order</Link>
-            </Button>
-          </>
-        ) : (
-          <Button onClick={() => openOrderDialog(table)}>Seat Reservation</Button>
+        <div className="flex gap-2">
+          {table.status === "available" ? (
+            <Button onClick={() => openOrderDialog(table)}>Seat Guests</Button>
+          ) : table.status === "occupied" ? (
+            <>
+              <Button variant="outline" onClick={() => onFreeTable(table.id)}>
+                Free Table
+              </Button>
+              <Button asChild>
+                <Link to={`/dashboard/waiter/tables/${table.number}`}>Take Order</Link>
+              </Button>
+            </>
+          ) : (
+            <Button onClick={() => openOrderDialog(table)}>Seat Reservation</Button>
+          )}
+        </div>
+        {reqUserRole === "manager" && (
+          <Button variant="destructive" onClick={() => onDeleteTable(table.id)}>
+            Delete
+          </Button>
+        )}
+        {reqUserRole === "waiter" && (
+          <Button variant="destructive" onClick={() => onDeleteTable(table.id)}>
+            Delete
+          </Button>
         )}
       </CardFooter>
     </Card>
