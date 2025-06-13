@@ -20,7 +20,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/tables", tablesRoutes);
 app.use("/api/menu", menuRoutes);
-app.use("/api/", chiefRoutes);
+app.use("/api/chief", chiefRoutes);
 app.use("/api/orders", ordersRoutes);
 
 const PORT = process.env.PORT || 8095;
