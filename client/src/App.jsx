@@ -17,8 +17,8 @@ import WaiterDashboardPage from "./pages/dashboard/waiter/WaiterDashboardPage";
 // Route Guard
 import PrivateRoute from "./lib/auth/PrivateRoute";  // Import from lib/auth
 import TableOrderPage from "./components/shared/dashboard/waiter/TableOrderPage";
-import TablesPage from "./components/shared/dashboard/Tables";
-import AllOrdersPage from "@/pages/dashboard/waiter/AllOrdersPage";
+import TablesPage from "@/pages/dashboard/TablesPage";
+import AllOrdersPage from "@/pages/dashboard/AllOrdersPage";
 // import TablesPage from "./pages/dashboard/waiter/TablesPage";
 
 function App() {
