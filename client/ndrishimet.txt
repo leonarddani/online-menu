@@ -1,0 +1,8 @@
+http://localhost:5173/login
+the submit button hover must be gold 
+and register button must be fixed and the login route in the reeister page is missing colors in login and regisere must be the same 
+
+
+
+
+

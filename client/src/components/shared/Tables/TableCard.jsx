@@ -29,13 +29,13 @@ function TableCard({ table, roomName, onSeatGuests, onFreeTable, onDeleteTable, 
       <CardFooter className="flex justify-between">
         <div className="flex gap-2">
           {table.status === "available" ? (
-            <Button onClick={() => openOrderDialog(table)}>Seat Guests</Button>
+            <Button onClick={() => openOrderDialog(table)} className="bg-green-800 hover:bg-emerald-700 text-white">Seat Guests</Button>
           ) : table.status === "occupied" ? (
             <>
-              <Button variant="outline" onClick={() => onFreeTable(table.id)}>
+              <Button variant="outline" onClick={() => onFreeTable(table.id)} className=" border-green-800">
                 Free Table
               </Button>
-              <Button asChild>
+              <Button asChild className="bg-green-800 hover:bg-emerald-700 text-white">
                 <Link to={`/dashboard/waiter/tables/${table.number}`}>Take Order</Link>
               </Button>
             </>

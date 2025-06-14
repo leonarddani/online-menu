@@ -131,9 +131,13 @@ const LoginForm = () => {
         )}
 
         {/* Submit Button */}
-        <Button type="submit" className="bg-green-900 cursor-pointer text-white">
-          Submit
-        </Button>
+       <Button
+  type="submit"
+  className="mt-10 cursor-pointer bg-green-800 hover:bg-green-900 text-white w-96"
+>
+  Submit
+</Button>
+
       </form>
     </Form>
   );

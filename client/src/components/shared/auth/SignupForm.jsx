@@ -88,10 +88,10 @@ const SignupForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div>
-            <h1 className="text-slate-900 font-bold text-2xl mb-1">
+            <h1 className="text-green-900 font-bold text-2xl mb-1">
               Create an account
             </h1>
-            <p className="text-xs font-normal text-muted-foreground mb-4">
+            <p className="text-s text-green-900 font-normal mb-8">
               Enter your email below to create your account
             </p>
           </div>
@@ -101,7 +101,7 @@ const SignupForm = () => {
             name="name"
             render={({ field }) => (
               <FormItem className="w-sm">
-                <FormLabel>Full Name</FormLabel>
+                <FormLabel className="text-green-900">Full Name</FormLabel>
                 <FormControl>
                   <Input placeholder="Enter your full name" {...field} />
                 </FormControl>
@@ -115,7 +115,7 @@ const SignupForm = () => {
             name="username"
             render={({ field }) => (
               <FormItem className="w-sm">
-                <FormLabel>Username</FormLabel>
+                <FormLabel className="text-green-900">Username</FormLabel>
                 <FormControl>
                   <Input placeholder="Your username" {...field} />
                 </FormControl>
@@ -129,7 +129,7 @@ const SignupForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem className="w-sm">
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="text-green-900">Email</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
@@ -147,7 +147,7 @@ const SignupForm = () => {
             name="password"
             render={({ field }) => (
               <FormItem className="w-sm">
-                <FormLabel>Password</FormLabel>
+                <FormLabel className="text-green-900">Password</FormLabel>
                 <FormControl>
                   <Input type="password" placeholder="********" {...field} />
                 </FormControl>
@@ -161,7 +161,7 @@ const SignupForm = () => {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem className="w-sm">
-                <FormLabel>Confirm Password</FormLabel>
+                <FormLabel className="text-green-900"> Confirm Password</FormLabel>
                 <FormControl>
                   <Input type="password" placeholder="********" {...field} />
                 </FormControl>
@@ -170,12 +170,13 @@ const SignupForm = () => {
             )}
           />
 
-          <Button
-            type="submit"
-            className="mt-10 cursor-pointer bg-slate-900 text-white w-96"
-          >
-            Submit
-          </Button>
+<Button
+  type="submit"
+  className="mt-10 cursor-pointer bg-green-800 hover:bg-green-900 text-white w-96"
+>
+  Submit
+</Button>
+
         </form>
       </Form>
     </div>

@@ -99,7 +99,7 @@ export const AllOrders = forwardRef((props, ref) => {
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Order ID</TableHead>
-            <TableHead>User Name</TableHead>
+            <TableHead > User Name</TableHead>
             <TableHead>User Role</TableHead>
             <TableHead >Table</TableHead>
             <TableHead className="text-right">Status</TableHead>
@@ -109,12 +109,12 @@ export const AllOrders = forwardRef((props, ref) => {
         <TableBody>
           {orders.map((order) => (
             <TableRow key={order.id}>
-              <TableCell className="font-medium">{order.id}</TableCell>
-              <TableCell className="font-medium capitalize">
+              <TableCell className="font-medium text-white">{order.id}</TableCell>
+              <TableCell className="font-medium capitalize text-white">
                 {order.user_name || "N/A"}
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 text-white">
                   {order.user_role === "chef" && (
                     <ChefHat className="w-4 h-4 text-orange-500" />
                   )}
@@ -126,7 +126,7 @@ export const AllOrders = forwardRef((props, ref) => {
                   </span>
                 </div>
               </TableCell>
-              <TableCell className="flex ">{order.table_id}</TableCell>
+              <TableCell className="flex text-white ">{order.table_id}</TableCell>
               <TableCell className="text-right">
   <div
     className={`
@@ -140,7 +140,7 @@ export const AllOrders = forwardRef((props, ref) => {
   </div>
 </TableCell>
 
-              <TableCell className="text-right  ">
+              <TableCell className="text-right text-white ">
                 ${order.total_amount}
               </TableCell>
             </TableRow>
