@@ -29,37 +29,46 @@ router.get("/:tableId/cart", (req, res) => {
   res.json(cart);
 });
 
-// --- POST add item to cart ---
 router.post("/:tableId/cart", async (req, res) => {
   const { tableId } = req.params;
-  const { itemId, quantity, notes } = req.body;
+  let { itemId, quantity, notes } = req.body;
+
+  const parsedQuantity = parseInt(quantity);
+  if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
+    return res.status(400).json({ message: "Invalid quantity" });
+  }
 
   try {
     const { rows } = await pool.query(
       "SELECT id, name, description, price, category, image_url FROM menu_items WHERE id = $1 AND is_available = true",
       [itemId]
     );
+
     if (rows.length === 0) {
       return res.status(404).json({ message: "Item not found or unavailable" });
     }
-    const item = rows[0];
 
+    const item = rows[0];
     if (!carts[tableId]) carts[tableId] = [];
 
     const existing = carts[tableId].find((entry) => entry.item.id === itemId);
     if (existing) {
-      existing.quantity += quantity;
-      if (notes) existing.notes = notes;
+      existing.quantity += parsedQuantity;
+      if (notes && typeof notes === "string") existing.notes = notes;
     } else {
-      carts[tableId].push({ item, quantity, notes: notes || "" });
+      carts[tableId].push({ item, quantity: parsedQuantity, notes: notes || "" });
     }
 
-    res.json({ cart: carts[tableId] });
+    return res.status(200).json({
+      message: "Item added to cart",
+      cart: carts[tableId],
+    });
   } catch (err) {
     console.error("Error adding to cart:", err);
-    res.status(500).json({ message: "Failed to add to cart" });
+    return res.status(500).json({ message: "Failed to add to cart" });
   }
 });
+
 
 // --- DELETE remove item from cart ---
 router.delete("/:tableId/cart/:itemId", (req, res) => {

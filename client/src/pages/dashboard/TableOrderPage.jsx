@@ -14,6 +14,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Minus, Plus, Trash } from "lucide-react";
+import Layout from "@/components/shared/layouts/Layout";
 
 export default function TableOrderPage() {
   const { id } = useParams(); // Table id from URL params
@@ -167,6 +168,7 @@ export default function TableOrderPage() {
   );
 
   return (
+    <Layout>
     <div className="flex flex-col gap-6">
       <div className="flex justify-between items-center">
         <div>
@@ -316,5 +318,6 @@ export default function TableOrderPage() {
         </Card>
       </div>
     </div>
+    </Layout>
   );
 }
