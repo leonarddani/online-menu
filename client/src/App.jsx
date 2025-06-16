@@ -19,6 +19,7 @@ import PrivateRoute from "./lib/auth/PrivateRoute";  // Import from lib/auth
 import TableOrderPage from "./pages/dashboard/TableOrderPage";
 import TablesPage from "@/pages/dashboard/TablesPage";
 import AllOrdersPage from "@/pages/dashboard/AllOrdersPage";
+import StaffPage from "./pages/dashboard/manager/StaffPage";
 // import TablesPage from "./pages/dashboard/waiter/TablesPage";
 
 function App() {
@@ -34,21 +35,23 @@ function App() {
         {/* Private: Client */}
         <Route element={<PrivateRoute allowedRoles={["client"]} />}>
           <Route path="/dashboard/client" element={<ClientDashboardPage />} />
-          
+           <Route path="/dashboard/client/tables" element={<TablesPage />} /> 
+          <Route path="/dashboard/client/tables/:id" element={<TableOrderPage />} />
         </Route>
 
         {/* Private: Manager */}
         <Route element={<PrivateRoute allowedRoles={["manager"]} />}>
            <Route path="/dashboard/manager" element={<ManagerDashboardPage />} />
-           <Route path="/dashboard/manager/staff" element={<ManagerDashboardPage />} />
-         
+           <Route path="/dashboard/manager/staff" element={<StaffPage />} />
+           <Route path="/dashboard/manager/tables/:id" element={<TableOrderPage />} />
+           <Route path="/dashboard/waiter/orders" element={<AllOrdersPage />} /> 
         </Route>
 
         {/* Private: Waiter */}
         <Route element={<PrivateRoute allowedRoles={["waiter"]} />}>
           <Route path="/dashboard/waiter" element={<WaiterDashboardPage />} />
-          <Route path="/dashboard/waiter/tables/:id" element={<TableOrderPage />} />
            <Route path="/dashboard/waiter/tables" element={<TablesPage />} /> 
+           <Route path="/dashboard/waiter/tables/:id" element={<TableOrderPage />} />
            <Route path="/dashboard/waiter/orders" element={<AllOrdersPage />} /> 
         </Route>
 

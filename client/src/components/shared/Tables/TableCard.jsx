@@ -3,8 +3,10 @@ import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } 
 import {Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
+import DeleteButton from "../dashboard/manager/DeleteButton";
 
 function TableCard({ table, roomName, onSeatGuests, onFreeTable, onDeleteTable, openOrderDialog, reqUserRole }) {
+   console.log("TableCard props:", { table, roomName, reqUserRole });
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -35,23 +37,32 @@ function TableCard({ table, roomName, onSeatGuests, onFreeTable, onDeleteTable, 
               <Button variant="outline" onClick={() => onFreeTable(table.id)} className=" border-green-800">
                 Free Table
               </Button>
-              <Button asChild className="bg-green-800 hover:bg-emerald-700 text-white">
+              {/* <Button asChild className="bg-green-800 hover:bg-emerald-700 text-white">
                 <Link to={`/dashboard/waiter/tables/${table.number}`}>Take Order</Link>
-              </Button>
+              </Button> */}
+
+              <Button asChild className="bg-green-800 hover:bg-emerald-700 text-white">
+  <Link to={`/dashboard/${reqUserRole}/tables/${table.number}`}>Take Order</Link>
+</Button>
+
             </>
           ) : (
             <Button onClick={() => openOrderDialog(table)}>Seat Reservation</Button>
           )}
         </div>
         {reqUserRole === "manager" && (
-          <Button variant="destructive" onClick={() => onDeleteTable(table.id)}>
-            Delete
-          </Button>
-        )}
-        {reqUserRole === "waiter" && (
-          <Button variant="destructive" onClick={() => onDeleteTable(table.id)}>
-            Delete
-          </Button>
+          
+<DeleteButton
+  
+  itemId={table.id}
+  itemName={`Table ${table.number}`}
+  resource="table"
+  endpoint="/api/tables/delete"
+  onDeleted={() => {
+    // refetch data, or remove table from local state
+    console.log("Table deleted");
+  }}
+/>
         )}
       </CardFooter>
     </Card>

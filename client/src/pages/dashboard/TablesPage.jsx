@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TableGrid from "@/components/shared/Tables/TableGrid";
 import SeatGuestsDialog from "@/components/shared/Tables/SeatGuestsDialog";
+import CreateTableDialog from "@/components/shared/dashboard/manager/CreateTableDialog";
 
 // Mapping room IDs to names
 const roomNames = {
@@ -158,6 +159,7 @@ const TablesPage = () => {
 </p>
 
         </div>
+        <CreateTableDialog/>
       </div>
       
       <Tabs defaultValue="all">
