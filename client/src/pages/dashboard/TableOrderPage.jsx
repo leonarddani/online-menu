@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Minus, Plus, Trash } from "lucide-react";
 import Layout from "@/components/shared/layouts/Layout";
+import { useSelector } from "react-redux";
 
 export default function TableOrderPage() {
   const { id } = useParams(); // Table id from URL params
@@ -22,6 +23,8 @@ export default function TableOrderPage() {
   const [menuItems, setMenuItems] = useState([]);
   const [cart, setCart] = useState([]);
   const [activeTab, setActiveTab] = useState("pizza");
+  const user = useSelector((state) => state.auth.user);
+  const reqUserRole = user?.role; // fallback to "waiter" if role is undefined
 
   // For demo: hardcoded userId; replace with auth user id if available
   const userId = 1;
@@ -154,7 +157,7 @@ export default function TableOrderPage() {
       if (response.ok) {
         const data = await response.json();
         toast.success(`Order for Table ${id} has been sent to the kitchen`);
-        navigate("/dashboard/waiter/tables");
+        navigate(`/dashboard/${reqUserRole}`);
       } else {
         console.error("Error placing order");
       }
@@ -180,18 +183,22 @@ export default function TableOrderPage() {
 </p>
 
 
-
+<Button>dffd</Button>
         </div>
         <Button variant="outline" onClick={() => navigate(-1)}>
           Back to Tables
         </Button>
-      </div>
 
+       
+      </div>
+ 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
+            
             <CardTitle>Menu</CardTitle>
             <CardDescription>Select items to add to the order</CardDescription>
+            
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="pizza" onValueChange={setActiveTab}>

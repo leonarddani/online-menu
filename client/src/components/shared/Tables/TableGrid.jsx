@@ -1,7 +1,7 @@
 import React from "react";
 import TableCard from "./TableCard";
 
-function TableGrid({ tables, onSeatGuests, onFreeTable, openOrderDialog, roomNames }) {
+function TableGrid({ tables, onSeatGuests, onFreeTable, openOrderDialog, roomNames, reqUserRole }) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {tables.map((table) => (
@@ -12,6 +12,7 @@ function TableGrid({ tables, onSeatGuests, onFreeTable, openOrderDialog, roomNam
           onSeatGuests={onSeatGuests}
           onFreeTable={onFreeTable}
           openOrderDialog={openOrderDialog}
+          reqUserRole={reqUserRole} // 👈 FIXED
         />
       ))}
     </div>
