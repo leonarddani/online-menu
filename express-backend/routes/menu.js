@@ -82,7 +82,7 @@ router.delete("/:tableId/cart/:itemId", (req, res) => {
 // --- PATCH update item quantity in cart ---
 router.patch("/:tableId/cart/:itemId", (req, res) => {
   const { tableId, itemId } = req.params;
-  const { quantity } = req.body;
+  const { quantity, notes } = req.body;  // <-- grab notes here
 
   const cart = carts[tableId];
   if (!cart) return res.status(404).json({ message: "Cart not found" });
@@ -90,13 +90,20 @@ router.patch("/:tableId/cart/:itemId", (req, res) => {
   const entry = cart.find((item) => item.item.id === parseInt(itemId));
   if (!entry) return res.status(404).json({ message: "Item not in cart" });
 
-  entry.quantity = quantity;
-  if (quantity <= 0) {
-    carts[tableId] = cart.filter((item) => item.item.id !== parseInt(itemId));
+  if (quantity !== undefined) {
+    entry.quantity = quantity;
+    if (quantity <= 0) {
+      carts[tableId] = cart.filter((item) => item.item.id !== parseInt(itemId));
+    }
+  }
+
+  if (notes !== undefined) {
+    entry.notes = notes;
   }
 
   res.json({ cart: carts[tableId] });
 });
+
 
 // --- POST place order (save to DB) ---
 router.post("/:tableId/order", async (req, res) => {

@@ -110,19 +110,7 @@ const SignupForm = () => {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem className="w-sm">
-                <FormLabel className="text-green-900">Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="Your username" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          
 
           <FormField
             control={form.control}

@@ -1,84 +1,23 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // or `next/router` in Next.js
-import { useToast } from "sonner"; // Toast for success/error notifications
+# 🍽️ Restaurant POS System
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
-  const navigate = useNavigate(); // Using react-router for navigation
-  
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    // Simulate an API call for login
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        // Store the JWT and role
-        localStorage.setItem("authToken", data.token);
-        localStorage.setItem("userRole", data.role); // Storing the user role
-        
-        toast.success("Logged in successfully!");
+This project is a **Point of Sale (POS)** system for restaurants, developed during my internship. It provides role-based dashboards and workflows for **Chef**, **Waiter**, and **Client** users.
 
-        // Redirect user based on their role
-        if (data.role === "admin") {
-          navigate("/dashboard/admin");
-        } else if (data.role === "manager") {
-          navigate("/dashboard/manager");
-        } else {
-          navigate("/dashboard/staff");
-        }
-      } else {
-        toast.error("Invalid credentials!");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("An error occurred during login.");
-    } finally {
-      setLoading(false);
-    }
-  };
+## 🎯 Project Overview
 
-  return (
-    <div className="login-form">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-    </div>
-  );
-};
+The app simplifies restaurant operations by offering separate dashboards and tools for:
 
-export default Login;
+- **Chef** – Manage incoming orders and update their status
+- **Waiter** – Take table orders, assign notes, and track order progress
+- **Client** – Browse menu, place orders, and make special requests
+
+## 🚀 Features
+
+- 📋 Role-based UI (Chef, Waiter, Client)
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React, Tailwind CSS, Redux, React Router
+- **UI Components**: ShadCN
+- **Backend**: Node.js (or Supabase if applicable)
+- **Database**: PostgreSQL
+- **API**: REST API

@@ -9,6 +9,7 @@ const tablesRoutes = require("./routes/tables");
 const menuRoutes = require("./routes/menu");
 const chiefRoutes = require("./routes/chief");
 const ordersRoutes = require("./routes/orders");
+const employeesRoutes = require("./routes/employees");
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/tables", tablesRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/chief", chiefRoutes);
 app.use("/api/orders", ordersRoutes);
+app.use("/api/employees", employeesRoutes);
 
 const PORT = process.env.PORT || 8095;
 

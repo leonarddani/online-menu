@@ -58,5 +58,3 @@ router.get('/user-waiter', async (req, res) => {
 
 module.exports = router;
 
-
-module.exports = router;

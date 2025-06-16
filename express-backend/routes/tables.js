@@ -116,4 +116,48 @@ router.post('/:id/seat', async (req, res) => {
   }
 });
 
+
+
+router.delete("/delete/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await pool.query("DELETE FROM tables WHERE id = $1", [id]);
+
+    res.json({ message: "Table and related orders deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting table:", error);
+    res.status(500).json({ error: "Failed to delete table." });
+  }
+});
+
+// POST /api/tables/create
+router.post("/create", async (req, res) => {
+  const { table_number, capacity, status } = req.body;
+
+  // Validation minimal
+  if (!table_number || !capacity || !status) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    // Kontrollojmë nëse table_number ekziston tashmë (unik)
+    const existing = await pool.query("SELECT * FROM tables WHERE table_number = $1", [table_number]);
+    if (existing.rows.length > 0) {
+      return res.status(409).json({ message: "Table number already exists" });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO tables (table_number, capacity, status, created_at, updated_at) 
+       VALUES ($1, $2, $3, NOW(), NOW()) RETURNING *`,
+      [table_number, capacity, status]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error creating table:", error);
+    res.status(500).json({ message: "Server error while creating table" });
+  }
+});
+
 module.exports = router;

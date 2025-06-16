@@ -1,14 +1,33 @@
-import Header from '@/components/shared/dashboard/Header'
-import Layout from '@/components/shared/layouts/Layout'
-import React from 'react'
+import React, { useState } from "react";
+import Header from "@/components/shared/dashboard/Header";
+import AddStaffDialog from "@/components/shared/dashboard/manager/AddStaffDialog";
+import SaffManagment from "@/components/shared/dashboard/manager/SaffManagment";
+import Layout from "@/components/shared/layouts/Layout";
+import { Button } from "@/components/ui/button";
 
 const StaffPage = () => {
+  const [isAddStaffOpen, setIsAddStaffOpen] = useState(false);
+
+  const handleAddStaffSuccess = () => {
+    // Refresh staff list or show success message
+    console.log("Staff added!");
+  };
+
   return (
     <Layout>
-   <Header title="Staff Managment" subtitle="here u can maange the waiters and chefs"/>
-    </Layout>
-   
-  )
-}
+      <Header title="Staff Management" subtitle="Manage your waiters and chefs">
+        <Button onClick={() => setIsAddStaffOpen(true)}>Add Staff</Button>
 
-export default StaffPage
+        <AddStaffDialog
+          open={isAddStaffOpen}
+          onOpenChange={setIsAddStaffOpen}
+          onAddSuccess={handleAddStaffSuccess}
+        />
+      </Header>
+
+      <SaffManagment />
+    </Layout>
+  );
+};
+
+export default StaffPage;
