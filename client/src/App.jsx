@@ -9,7 +9,7 @@ import SignupPage from "./pages/auth/SignupPage";
 import Unauthorized from "./pages/Unauthorized";
 
 // Dashboard Pages
-import Cheflanding from "./pages/dashboard/chef/Cheflanding";
+import Cheflanding from "./pages/dashboard/chef/ChefDashboard";
 import ClientDashboardPage from "./pages/dashboard/client/ClientDashboardPage";
 import ManagerDashboardPage from "./pages/dashboard/manager/ManagerDashboardPage";
 import WaiterDashboardPage from "./pages/dashboard/waiter/WaiterDashboardPage";
@@ -20,6 +20,7 @@ import TableOrderPage from "./pages/dashboard/TableOrderPage";
 import TablesPage from "@/pages/dashboard/TablesPage";
 import AllOrdersPage from "@/pages/dashboard/AllOrdersPage";
 import StaffPage from "./pages/dashboard/manager/StaffPage";
+import ChefDashboard from "./components/shared/dashboard/chief/ChefDashboard";
 // import TablesPage from "./pages/dashboard/waiter/TablesPage";
 
 function App() {
@@ -57,7 +58,7 @@ function App() {
 
         {/* Private: Chef */}
         <Route element={<PrivateRoute allowedRoles={["chef"]} />}>
-          <Route path="/dashboard/chef" element={<Cheflanding />} />
+          <Route path="/dashboard/chef" element={<ChefDashboard />} />
         </Route>
       </Routes>
       <Toaster />

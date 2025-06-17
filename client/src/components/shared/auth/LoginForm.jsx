@@ -60,8 +60,6 @@ const LoginForm = () => {
       // Dispatch login action to Redux store
       dispatch(login(responseData.user));
 
-      // Show a success toast
-      toast("Welcome back", { description: "You have logged in successfully." });
 
       // Redirect user based on their role
       const userRole = responseData.user.role;
