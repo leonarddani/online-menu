@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 // Fetch tables from API
 export const fetchTables = createAsyncThunk("tables/fetchTables", async () => {
   try {
-    const response = await fetch("http://localhost:8095/api/tables");
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/tables`);
 
     if (!response.ok) {
       throw new Error("Failed to fetch tables");
@@ -30,7 +30,7 @@ export const updateTableStatus = createAsyncThunk(
   "tables/updateTableStatus",
   async ({ id, status }) => {
     try {
-      const response = await fetch(`http://localhost:8095/api/tables/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/tables/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

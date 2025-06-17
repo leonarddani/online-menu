@@ -29,7 +29,7 @@ const EditStaffDialog = ({ open, onOpenChange, staff, onSave }) => {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch(`http://localhost:8095/api/employees/${staff.id}`, {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/employees/${staff.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

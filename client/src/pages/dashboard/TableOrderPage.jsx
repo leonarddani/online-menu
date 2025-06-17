@@ -32,7 +32,7 @@ export default function TableOrderPage() {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const response = await fetch("http://localhost:8095/api/menu/");
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/menu/`);
         if (!response.ok) throw new Error("Failed to fetch menu");
         const data = await response.json();
         setMenuItems(data);
@@ -43,7 +43,7 @@ export default function TableOrderPage() {
 
     const fetchCart = async () => {
       try {
-        const response = await fetch(`http://localhost:8095/api/menu/${id}/cart`);
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/menu/${id}/cart`);
         if (!response.ok) throw new Error("Failed to fetch cart");
         const data = await response.json();
         setCart(data);
@@ -60,7 +60,7 @@ export default function TableOrderPage() {
   const addToCart = async (itemId, quantity, notes) => {
     try {
       const response = await fetch(
-        `http://localhost:8095/api/menu/${id}/cart`,
+        `${import.meta.env.VITE_BASE_URL}/menu/${id}/cart`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -83,7 +83,7 @@ export default function TableOrderPage() {
   const removeFromCart = async (itemId) => {
     try {
       const response = await fetch(
-        `http://localhost:8095/api/menu/${id}/cart/${itemId}`,
+        `${import.meta.env.VITE_BASE_URL}/menu/${id}/cart/${itemId}`,
         { method: "DELETE" }
       );
 
@@ -103,7 +103,7 @@ export default function TableOrderPage() {
     if (quantity < 1) return; // Prevent <1 quantity
     try {
       const response = await fetch(
-        `http://localhost:8095/api/menu/${id}/cart/${itemId}`,
+        `${import.meta.env.VITE_BASE_URL}/menu/${id}/cart/${itemId}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -126,7 +126,7 @@ export default function TableOrderPage() {
   const updateNotes = async (itemId, notes) => {
     try {
       const response = await fetch(
-        `http://localhost:8095/api/menu/${id}/cart/${itemId}`,
+        `${import.meta.env.VITE_BASE_URL}/menu/${id}/cart/${itemId}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -148,7 +148,7 @@ export default function TableOrderPage() {
   // Place order
   const placeOrder = async () => {
     try {
-      const response = await fetch(`http://localhost:8095/api/menu/${id}/order`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/menu/${id}/order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cart, userId }), // send userId here

@@ -18,7 +18,7 @@ export default function ChefDashboard() {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8095/api/chef/orders");
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/chef/orders`);
       if (!res.ok) throw new Error("Failed to fetch orders");
       const data = await res.json();
       setOrders(data);
@@ -40,7 +40,7 @@ export default function ChefDashboard() {
   // Update order status
 async function updateStatus(orderId, newStatus) {
   try {
-    const response = await fetch(`http://localhost:8095/api/chef/orders/${orderId}/status`, {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/chef/orders/${orderId}/status`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

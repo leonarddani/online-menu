@@ -27,7 +27,7 @@ export const AllOrders = forwardRef((props, ref) => {
   const fetchOrders = async () => {
     try {
       const userId = localStorage.getItem("userId");
-      let url = `http://localhost:8095/api/orders/user-waiter?page=${page}&limit=${limit}`;
+      let url = `${import.meta.env.VITE_BASE_URL}/orders/user-waiter?page=${page}&limit=${limit}`;
       if (userId) url += `&userId=${userId}`;
 
       const res = await axios.get(url);
@@ -41,7 +41,7 @@ export const AllOrders = forwardRef((props, ref) => {
   const handleDownloadCSV = async () => {
     try {
       const userId = localStorage.getItem("userId");
-      let url = `http://localhost:8095/api/orders/user-waiter?page=1&limit=10000`;
+      let url = `${import.meta.env.VITE_BASE_URL}/orders/user-waiter?page=1&limit=10000`;
       if (userId) url += `&userId=${userId}`;
 
       const res = await axios.get(url);

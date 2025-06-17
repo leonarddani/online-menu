@@ -23,7 +23,7 @@ const SaffManagment = () => {
       try {
         const token = localStorage.getItem("token"); 
 
-        const res = await fetch("http://localhost:8095/api/employees/staff", {
+        const res = await fetch(`${import.meta.env.VITE_BASE_URL}/employees/staff`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

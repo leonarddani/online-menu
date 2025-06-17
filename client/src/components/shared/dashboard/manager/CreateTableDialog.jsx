@@ -51,7 +51,7 @@ const CreateTableDialog = () => {
       // Add status = "available" before sending
       const payload = { ...data, status: "available" };
 
-      const response = await fetch(`http://localhost:8095/api/tables/create`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/tables/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

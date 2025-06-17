@@ -40,7 +40,7 @@ const AddStaffDialog = ({ open, onOpenChange, onAddSuccess }) => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await fetch("http://localhost:8095/api/auth/register", {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

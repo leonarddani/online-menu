@@ -40,7 +40,7 @@ const TablesPage = () => {
     const fetchTables = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:8095/api/tables");
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/tables`);
         if (!response.ok) throw new Error("Failed to fetch tables");
 
         const data = await response.json();
@@ -74,7 +74,7 @@ const TablesPage = () => {
   // Function to handle seating guests
   const handleSeatGuests = async (tableId) => {
     try {
-      const response = await fetch(`http://localhost:8095/api/tables/${tableId}/seat`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/tables/${tableId}/seat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -102,7 +102,7 @@ const TablesPage = () => {
   // Function to handle freeing a table
   const handleFreeTable = async (tableId) => {
     try {
-      const response = await fetch(`http://localhost:8095/api/tables/${tableId}/free`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/tables/${tableId}/free`, {
         method: "POST",
       });
 
@@ -124,7 +124,7 @@ const TablesPage = () => {
   // Function to handle deleting a table
   const handleDeleteTable = async (tableId) => {
     try {
-      const response = await fetch(`http://localhost:8095/api/tables/${tableId}`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/tables/${tableId}`, {
         method: "DELETE",
       });
 
