@@ -1,7 +1,6 @@
 
 import Header from '@/components/shared/dashboard/Header'
 import Layout from '@/components/shared/layouts/Layout'
-import Navbar from '@/components/shared/navbar/Navbar'
 import React from 'react'
 
 function ChefDashboard() {

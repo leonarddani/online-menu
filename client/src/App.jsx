@@ -20,7 +20,7 @@ import TableOrderPage from "./pages/dashboard/TableOrderPage";
 import TablesPage from "@/pages/dashboard/TablesPage";
 import AllOrdersPage from "@/pages/dashboard/AllOrdersPage";
 import StaffPage from "./pages/dashboard/manager/StaffPage";
-import ChefDashboard from "./components/shared/dashboard/chief/ChefDashboard";
+import ChefDashboard from "@/pages/dashboard/chef/ChefDashboard";
 // import TablesPage from "./pages/dashboard/waiter/TablesPage";
 
 function App() {
