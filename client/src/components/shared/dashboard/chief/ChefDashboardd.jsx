@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 
-export default function ChefDashboard() {
+export default function ChefDashboardd() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
 
