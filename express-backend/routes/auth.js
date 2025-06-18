@@ -19,17 +19,19 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
-      name, email, password: hashedPassword, role
+      name,
+      email,
+      password: hashedPassword,
+      role: role.toLowerCase(), // normalize role
     });
 
     res.status(201).json(newUser);
 
   } catch (error) {
+    console.error("Register error:", error);
     res.status(500).json({ error: error.message });
   }
 });
-
-
 
 // Login user
 router.post("/login", async (req, res) => {
@@ -48,8 +50,13 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Incorrect credentials" });
     }
 
+    // Include role and id in the token
     const token = jwt.sign(
-      { id: user.id, status: user.status },
+      {
+        id: user.id,
+        role: user.role,
+        status: user.status, // optional
+      },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
@@ -63,10 +70,11 @@ router.post("/login", async (req, res) => {
         email: user.email,
         role: user.role,
         created_at: user.created_at,
-      }
+      },
     });
 
   } catch (error) {
+    console.error("Login error:", error);
     res.status(500).json({ error: error.message });
   }
 });

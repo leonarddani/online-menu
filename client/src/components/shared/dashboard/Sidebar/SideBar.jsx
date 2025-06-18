@@ -39,7 +39,7 @@ export default function Sidebar() {
     manager: [
       // { label: "Tables", icon: Store, href: "/dashboard/manager/tables" },
       { label: "Staff Management", icon: Users, href: "/dashboard/manager/staff" },
-       { label: "Orders", icon: ClipboardList, href: "/dashboard/waiter/orders" },
+       { label: "Orders", icon: ClipboardList, href: "/dashboard/manager/orders" },
       // { label: "Products & Offers", icon: Menu, href: "/dashboard/manager/products" },
       // { label: "Bookings", icon: BookOpenCheck, href: "/dashboard/manager/bookings" },
     ],

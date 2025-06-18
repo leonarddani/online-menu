@@ -45,7 +45,7 @@ function App() {
            <Route path="/dashboard/manager" element={<ManagerDashboardPage />} />
            <Route path="/dashboard/manager/staff" element={<StaffPage />} />
            <Route path="/dashboard/manager/tables/:id" element={<TableOrderPage />} />
-           <Route path="/dashboard/waiter/orders" element={<AllOrdersPage />} /> 
+           <Route path="/dashboard/manager/orders" element={<AllOrdersPage />} /> 
         </Route>
 
         {/* Private: Waiter */}

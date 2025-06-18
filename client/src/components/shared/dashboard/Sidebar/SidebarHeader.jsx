@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { Coffee  } from "lucide-react";
+import { Coffee, X  } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function SidebarHeader({ showCloseButton, onClose }) {
   return (
