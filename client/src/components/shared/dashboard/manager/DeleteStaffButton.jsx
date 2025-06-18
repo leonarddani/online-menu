@@ -1,37 +1,43 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Trash } from "lucide-react";
-import { toast } from "sonner"; // or your toast lib
+import { toast } from "sonner";
 
 const DeleteStaffButton = ({ staff, onDeleteSuccess }) => {
   const [loading, setLoading] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
 
-  const handleDelete = async () => {
-    if (staff.role === "manager") {
-      toast.error("Cannot delete employee with role 'manager'.");
-      return;
-    }
-
-    if (!window.confirm(`Are you sure you want to delete ${staff.name}?`)) return;
-
+  const handleDeleteConfirm = async () => {
     setLoading(true);
-    const token = localStorage.getItem("token");
 
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch(`${import.meta.env.VITE_BASE_URL}/employees/${staff.id}`, {
         method: "DELETE",
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Failed to delete staff");
+        let errorMessage = "Failed to delete staff";
+        try {
+          const errorData = await res.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {}
+        throw new Error(errorMessage);
       }
 
       toast.success("Staff deleted successfully.");
       onDeleteSuccess(staff.id);
+      setShowDialog(false);
     } catch (error) {
       toast.error(`Delete failed: ${error.message}`);
     } finally {
@@ -39,16 +45,50 @@ const DeleteStaffButton = ({ staff, onDeleteSuccess }) => {
     }
   };
 
+  const openDialog = () => {
+    if (staff.role === "manager") {
+      toast.error("Cannot delete employee with role 'manager'.");
+      return;
+    }
+    setShowDialog(true);
+  };
+
   return (
-    <Button
-      variant="destructive"
-      size="sm"
-      onClick={handleDelete}
-      disabled={loading}
-      title={staff.role === "manager" ? "Cannot delete manager" : "Delete staff"}
-    >
-      <Trash className="h-4 w-4" />
-    </Button>
+    <>
+      <Button
+        variant="destructive"
+        size="sm"
+        onClick={openDialog}
+        disabled={loading || staff.role === "manager"}
+        title={staff.role === "manager" ? "Cannot delete manager" : "Delete staff"}
+      >
+        <Trash className="h-4 w-4" />
+      </Button>
+
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Staff Member</DialogTitle>
+            <p className="text-muted-foreground">
+              Are you sure you want to delete <strong>{staff.name}</strong>?
+            </p>
+          </DialogHeader>
+
+          <DialogFooter className="space-x-2">
+            <Button variant="outline" onClick={() => setShowDialog(false)} disabled={loading}>
+              Cancel
+            </Button>
+            <Button
+              className="destructive"
+              onClick={handleDeleteConfirm}
+              disabled={loading}
+            >
+              {loading ? "Deleting..." : "Confirm Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

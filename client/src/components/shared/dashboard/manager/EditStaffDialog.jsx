@@ -10,15 +10,17 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
-import { toast } from "sonner"; // or your preferred toast library
+import { toast } from "sonner";
 
 const EditStaffDialog = ({ open, onOpenChange, staff, onSave }) => {
   const [role, setRole] = useState(staff?.role || "");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setRole(staff?.role || "");
-  }, [staff]);
+    if (!open) {
+      setRole(staff?.role || "");
+    }
+  }, [open, staff]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,14 +41,18 @@ const EditStaffDialog = ({ open, onOpenChange, staff, onSave }) => {
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Failed to update staff");
+        let errorMessage = "Failed to update staff";
+        try {
+          const errorData = await res.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {}
+        throw new Error(errorMessage);
       }
 
       const updatedStaff = await res.json();
 
       toast.success("Staff updated successfully!");
-      onSave(updatedStaff.data || updatedStaff); // pass updated staff to parent
+      onSave(updatedStaff.data || updatedStaff);
       onOpenChange(false);
     } catch (error) {
       toast.error(`Error: ${error.message}`);

@@ -1,141 +1,48 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { toast } from "sonner";
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-
+import React, { useEffect, useState } from "react";
+import AddStaffDialog from "./AddStaffDialog"; // your dialog component
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
-// Use 'role' as expected by backend
-const staffSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  role: z.enum(["waiter", "chef", "manager"], "Select a valid role"),
-});
+import { useDispatch, useSelector } from "react-redux";
+import { fetchStaff } from "@/store/staffSlice"; // your thunk to fetch staff
 
-const AddStaffDialog = ({ open, onOpenChange, onAddSuccess }) => {
-  const form = useForm({
-    resolver: zodResolver(staffSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      role: "waiter",
-    },
-  });
+const StaffManagement = () => {
+  const dispatch = useDispatch();
 
-  const onSubmit = async (data) => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...data,
-          password: "default123", // optional: prompt for this later
-        }),
-      });
+  // Select staff state from Redux store
+  const { staffList, loading, error } = useSelector((state) => state.staff);
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to add staff");
-      }
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-      toast.success("Staff member added successfully!");
-      onAddSuccess();
-      onOpenChange(false);
-      form.reset();
-    } catch (error) {
-      toast.error(`Error: ${error.message}`);
-    }
-  };
+  // Fetch staff list on mount
+  useEffect(() => {
+    dispatch(fetchStaff());
+  }, [dispatch]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add Staff Member</DialogTitle>
-        </DialogHeader>
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Staff Management</h1>
+        <Button onClick={() => setIsDialogOpen(true)}>Add Staff</Button>
+      </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <input
-                      type="text"
-                      placeholder="Enter full name"
-                      {...field}
-                      className="input-class"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+      {loading && <p>Loading staff...</p>}
+      {error && <p className="text-red-500">Error: {error}</p>}
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <input
-                      type="email"
-                      placeholder="Enter email"
-                      {...field}
-                      className="input-class"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+      <ul>
+        {staffList.map((staff) => (
+          <li key={staff.id} className="mb-2">
+            {staff.name} — {staff.role} — {staff.email}
+          </li>
+        ))}
+      </ul>
 
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
-                  <FormControl>
-                    <select {...field} className="input-class">
-                      <option value="waiter">Waiter</option>
-                      <option value="chef">Chef</option>
-                      <option value="manager">Manager</option>
-                    </select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button type="submit" className="w-full">
-              Add Staff
-            </Button>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+      <AddStaffDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        onAddSuccess={() => dispatch(fetchStaff())} // refetch after add
+      />
+    </div>
   );
 };
 
-export default AddStaffDialog;
+export default StaffManagement;

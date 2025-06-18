@@ -1,3 +1,4 @@
+// src/components/shared/dashboard/manager/CreateTableDialog.jsx
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -35,7 +36,7 @@ const formSchema = z.object({
     .positive(),
 });
 
-const CreateTableDialog = () => {
+const CreateTableDialog = ({ isOpen, onOpenChange, onTableCreated }) => {
   const [loading, setLoading] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -48,7 +49,6 @@ const CreateTableDialog = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      // Add status = "available" before sending
       const payload = { ...data, status: "available" };
 
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/tables/create`, {
@@ -70,7 +70,9 @@ const CreateTableDialog = () => {
       toast.success("Success", {
         description: `Table "${result.table_number}" created successfully.`,
       });
+
       form.reset();
+      onTableCreated?.(result); // trigger parent to close dialog and maybe refresh data
     } catch (error) {
       toast.error("Error", { description: error.message });
     } finally {
@@ -79,7 +81,7 @@ const CreateTableDialog = () => {
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button>
           <Plus /> Create new table
