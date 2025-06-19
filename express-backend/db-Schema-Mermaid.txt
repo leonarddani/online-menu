@@ -1,4 +1,3 @@
-erDiagram
     users ||--o{ orders : places
     users ||--o{ ratings : submits
     tables ||--o{ orders : hosts
@@ -41,6 +40,7 @@ erDiagram
         int id PK
         int user_id FK
         int table_id FK
+        int table_number     <-- added this column (denormalized)
         decimal total_amount
         varchar status
         timestamp created_at

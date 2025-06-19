@@ -24,7 +24,7 @@ const DeleteButton = ({ itemId, itemName, resource = "item" }) => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/tables/${itemId}`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/tables/delete/${itemId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

@@ -3,6 +3,7 @@ import React, {
   useState,
   forwardRef,
   useImperativeHandle,
+  useCallback,
 } from "react";
 import axios from "axios";
 import {
@@ -21,7 +22,7 @@ import { useSelector } from "react-redux";
 
 export const AllOrders = forwardRef((props, ref) => {
   const token = useSelector((state) => state.auth.token);
-  const userId = useSelector((state) => state.auth.userId); // or wherever you store userId
+  const userId = useSelector((state) => state.auth.userId);
 
   const [orders, setOrders] = useState([]);
   const [page, setPage] = useState(1);
@@ -30,8 +31,8 @@ export const AllOrders = forwardRef((props, ref) => {
   const [error, setError] = useState(null);
   const limit = 10;
 
-  const fetchOrders = async () => {
-    if (!token) return; // wait for token
+  const fetchOrders = useCallback(async () => {
+    if (!token) return;
 
     setLoading(true);
     setError(null);
@@ -44,17 +45,19 @@ export const AllOrders = forwardRef((props, ref) => {
           Authorization: `Bearer ${token}`,
         },
       });
+
       setOrders(res.data.orders);
-      setTotalPages(res.data.totalPages);
+      // Adjust if your API response uses res.data.pagination.totalPages
+      setTotalPages(res.data.pagination?.totalPages || 1);
     } catch (err) {
       console.error("Failed to fetch orders:", err);
       setError("Failed to fetch orders");
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, token, userId]);
 
-  const handleDownloadCSV = async () => {
+  const handleDownloadCSV = useCallback(async () => {
     if (!token) return;
 
     try {
@@ -110,7 +113,7 @@ export const AllOrders = forwardRef((props, ref) => {
     } catch (err) {
       console.error("Failed to download CSV:", err);
     }
-  };
+  }, [token, userId]);
 
   useImperativeHandle(ref, () => ({
     downloadCSV: handleDownloadCSV,
@@ -118,7 +121,7 @@ export const AllOrders = forwardRef((props, ref) => {
 
   useEffect(() => {
     fetchOrders();
-  }, [page, token]);
+  }, [fetchOrders]);
 
   if (loading) return <div className="p-4 text-center">Loading orders...</div>;
   if (error) return <div className="p-4 text-center text-red-600">{error}</div>;
@@ -165,7 +168,7 @@ export const AllOrders = forwardRef((props, ref) => {
                   <span className="capitalize">{order.user_role || "N/A"}</span>
                 </div>
               </TableCell>
-              <TableCell className="flex text-white">{order.table_id}</TableCell>
+              <TableCell className="flex text-white">{order.table_number || order.table_id}</TableCell>
               <TableCell className="text-right">
                 <div
                   className={`

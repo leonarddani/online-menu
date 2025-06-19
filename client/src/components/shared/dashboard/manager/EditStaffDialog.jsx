@@ -9,14 +9,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateStaff } from "@/store/staffSlice";
 
-const EditStaffDialog = ({ open, onOpenChange, staff, onSave }) => {
+const EditStaffDialog = ({ open, onOpenChange, staff }) => {
   const [role, setRole] = useState(staff?.role || "");
   const [loading, setLoading] = useState(false);
   const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!open) {
@@ -55,7 +63,7 @@ const EditStaffDialog = ({ open, onOpenChange, staff, onSave }) => {
       const updatedStaff = await res.json();
 
       toast.success("Staff updated successfully!");
-      onSave(updatedStaff.data || updatedStaff);
+      dispatch(updateStaff(updatedStaff.data || updatedStaff)); // update redux store
       onOpenChange(false);
     } catch (error) {
       toast.error(`Error: ${error.message}`);

@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import Header from "@/components/shared/dashboard/Header";
 import AddStaffDialog from "@/components/shared/dashboard/manager/AddStaffDialog";
-import SaffManagment from "@/components/shared/dashboard/manager/SaffManagment";
+import StaffManagement from "@/components/shared/dashboard/manager/SaffManagment";
 import Layout from "@/components/shared/layouts/Layout";
 import { Button } from "@/components/ui/button";
 
 const StaffPage = () => {
   const [isAddStaffOpen, setIsAddStaffOpen] = useState(false);
+  const [refreshFlag, setRefreshFlag] = useState(false);
 
   const handleAddStaffSuccess = () => {
-    // Refresh staff list or show success message
-    console.log("Staff added!");
+    setIsAddStaffOpen(false);
+    setRefreshFlag((prev) => !prev); // Toggle to force StaffManagement refresh
+    console.log("Staff added! Refreshing list...");
   };
 
   return (
@@ -25,7 +27,7 @@ const StaffPage = () => {
         />
       </Header>
 
-      <SaffManagment />
+      <StaffManagement refreshFlag={refreshFlag} />
     </Layout>
   );
 };

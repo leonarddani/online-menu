@@ -15,6 +15,8 @@ import DeleteStaffButton from "./DeleteStaffButton";
 import { useSelector } from "react-redux";
 
 const StaffManagement = () => {
+  console.log("Rendering EditStaffDialog");
+
   const token = useSelector((state) => state.auth.token);
   const [activeStaff, setActiveStaff] = useState([]);
   const [isEditStaffOpen, setIsEditStaffOpen] = useState(false);
@@ -49,6 +51,7 @@ const StaffManagement = () => {
   }, [token]);
 
   const handleSaveStaff = (updatedStaff) => {
+    
     setActiveStaff((prev) =>
       prev.map((staff) => (staff.id === updatedStaff.id ? updatedStaff : staff))
     );

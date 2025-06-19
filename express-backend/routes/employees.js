@@ -1,6 +1,7 @@
 const express = require("express");
 const pool = require("../config/db");
 const authMiddleware = require("../middlewares/authmiddleware");
+
 const { Pool } = require("pg");
 
 
@@ -137,35 +138,40 @@ router.delete(
 
 
 // POST /api/employees
-router.post(
-  "/create",authMiddleware,
-  async (req, res) => {
-    // Check validation errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+router.post("/create", authMiddleware, async (req, res) => {
+  const { name, email, role, password } = req.body;
 
-     const { name, email, role } = req.body; // ✅
-
-    try {
-      // Optional: prevent adding a manager if you want:
-      // if (role === "manager") {
-      //   return res.status(403).json({ error: "Adding manager role is not allowed." });
-      // }
-
-      // Insert new employee
-      const insertQuery =
-        "INSERT INTO employees (name, email, role) VALUES ($1, $2, $3) RETURNING *";
-      const values = [name, email, role];
-
-      const { rows } = await pool.query(insertQuery, values);
-      return res.status(201).json({ employee: rows[0] });
-    } catch (error) {
-      console.error("Error adding employee:", error);
-      return res.status(500).json({ error: "Internal server error" });
-    }
+  if (!name || !email || !role || !password) {
+    return res.status(400).json({ error: "All fields are required" });
   }
-);
+
+  try {
+    // Check if user with email already exists (optional)
+    const existingUser = await User.findByEmail(email);
+    if (existingUser) {
+      return res.status(409).json({ error: "Email already registered" });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create user through model
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role,
+    });
+
+    // Return created user (omit password in response ideally)
+    const { password: _, ...userWithoutPassword } = newUser;
+
+    return res.status(201).json({ employee: userWithoutPassword });
+  } catch (error) {
+    console.error("Error adding employee:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 module.exports = router;

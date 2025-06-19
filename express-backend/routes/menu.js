@@ -30,6 +30,7 @@ router.get("/:tableId/cart", (req, res) => {
   res.json(cart);
 });
 
+// --- POST add item to cart ---
 router.post("/:tableId/cart", async (req, res) => {
   const { tableId } = req.params;
   let { itemId, quantity, notes } = req.body;
@@ -70,7 +71,6 @@ router.post("/:tableId/cart", async (req, res) => {
   }
 });
 
-
 // --- DELETE remove item from cart ---
 router.delete("/:tableId/cart/:itemId", (req, res) => {
   const { tableId, itemId } = req.params;
@@ -80,10 +80,10 @@ router.delete("/:tableId/cart/:itemId", (req, res) => {
   res.json({ cart: carts[tableId] });
 });
 
-// --- PATCH update item quantity in cart ---
+// --- PATCH update item quantity and notes in cart ---
 router.patch("/:tableId/cart/:itemId", (req, res) => {
   const { tableId, itemId } = req.params;
-  const { quantity, notes } = req.body;  // <-- grab notes here
+  const { quantity, notes } = req.body;
 
   const cart = carts[tableId];
   if (!cart) return res.status(404).json({ message: "Cart not found" });
@@ -105,29 +105,48 @@ router.patch("/:tableId/cart/:itemId", (req, res) => {
   res.json({ cart: carts[tableId] });
 });
 
-
 // --- POST place order (save to DB) ---
-router.post("/:tableId/order",authMiddleware, async (req, res) => {
-  const { tableId } = req.params;
-  const { cart, userId } = req.body; // userId from frontend/session
-
-  if (!cart || cart.length === 0) return res.status(400).json({ message: "Cart is empty" });
-  if (!userId) return res.status(400).json({ message: "User ID is required" });
-
+router.post("/:tableId/order", authMiddleware, async (req, res) => {
   try {
-    // Calculate total amount
-    const totalAmount = cart.reduce((sum, entry) => sum + entry.item.price * entry.quantity, 0);
+    const tableNumber = req.params.tableId; // This is actually table_number
+    const { cart, userId } = req.body;
 
-    // Insert order row, returning new order id
+    if (!cart || cart.length === 0)
+      return res.status(400).json({ message: "Cart is empty" });
+    if (!userId)
+      return res.status(400).json({ message: "User ID is required" });
+
+    // Convert table_number to actual table.id (PK)
+    const tableRes = await pool.query(
+      "SELECT id FROM tables WHERE table_number = $1",
+      [tableNumber]
+    );
+
+    if (tableRes.rows.length === 0)
+      return res.status(400).json({ message: "Invalid table number" });
+
+    const tableId = tableRes.rows[0].id;
+
+    // Calculate total amount
+    const totalAmount = cart.reduce(
+      (sum, entry) => sum + entry.item.price * entry.quantity,
+      0
+    );
+
+    // Insert order
     const insertOrderQuery = `
       INSERT INTO orders (user_id, table_id, total_amount, status, created_at, updated_at)
       VALUES ($1, $2, $3, 'pending', NOW(), NOW())
       RETURNING id
     `;
-    const orderResult = await pool.query(insertOrderQuery, [userId, tableId, totalAmount]);
+    const orderResult = await pool.query(insertOrderQuery, [
+      userId,
+      tableId,
+      totalAmount,
+    ]);
     const orderId = orderResult.rows[0].id;
 
-    // Insert order_items rows
+    // Insert order items
     const insertOrderItemQuery = `
       INSERT INTO order_items (order_id, menu_item_id, quantity, notes, created_at, updated_at)
       VALUES ($1, $2, $3, $4, NOW(), NOW())
@@ -138,12 +157,12 @@ router.post("/:tableId/order",authMiddleware, async (req, res) => {
         orderId,
         entry.item.id,
         entry.quantity,
-        entry.notes || ""
+        entry.notes || "",
       ]);
     }
 
     // Clear cart
-    delete carts[tableId];
+    delete carts[tableNumber];
 
     res.json({ message: "Order placed successfully", orderId, totalAmount });
   } catch (error) {
@@ -152,11 +171,22 @@ router.post("/:tableId/order",authMiddleware, async (req, res) => {
   }
 });
 
-// --- Optional: GET orders by table ---
-router.get("/:tableId/orders",authMiddleware, async (req, res) => {
-  const { tableId } = req.params;
+// --- GET orders by table ---
+router.get("/:tableId/orders", authMiddleware, async (req, res) => {
+  const tableNumber = req.params.tableId;
 
   try {
+    // Convert table_number to id
+    const tableRes = await pool.query(
+      "SELECT id FROM tables WHERE table_number = $1",
+      [tableNumber]
+    );
+
+    if (tableRes.rows.length === 0)
+      return res.status(400).json({ message: "Invalid table number" });
+
+    const tableId = tableRes.rows[0].id;
+
     const query = `
       SELECT o.id, o.user_id, o.table_id, o.total_amount, o.status, o.created_at,
              json_agg(json_build_object(

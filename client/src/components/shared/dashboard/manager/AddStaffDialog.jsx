@@ -1,48 +1,140 @@
-import React, { useEffect, useState } from "react";
-import AddStaffDialog from "./AddStaffDialog"; // your dialog component
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchStaff } from "@/store/staffSlice";
 
-import { useDispatch, useSelector } from "react-redux";
-import { fetchStaff } from "@/store/staffSlice"; // your thunk to fetch staff
+const schema = z.object({
+  name: z.string().min(2, "Name required"),
+  email: z.string().email("Invalid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  role: z.enum(["manager", "waiter", "chef"], {
+    errorMap: () => ({ message: "Role is required" }),
+  }),
+});
 
-const StaffManagement = () => {
+const AddStaffDialog = ({ open, onOpenChange, onAddSuccess }) => {
+  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
-  // Select staff state from Redux store
-  const { staffList, loading, error } = useSelector((state) => state.staff);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const role = watch("role");
 
-  // Fetch staff list on mount
   useEffect(() => {
-    dispatch(fetchStaff());
-  }, [dispatch]);
+    if (!open) reset();
+  }, [open, reset]);
+
+  const handleRoleChange = (value) => {
+    setValue("role", value, { shouldValidate: true });
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Failed to add staff");
+      }
+
+      const newStaff = await res.json();
+      toast.success("Staff added!");
+
+      // Trigger parent callback (optional)
+      onAddSuccess?.(newStaff);
+
+      // REFRESH STAFF LIST
+      dispatch(fetchStaff());
+
+      onOpenChange(false);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Staff Management</h1>
-        <Button onClick={() => setIsDialogOpen(true)}>Add Staff</Button>
-      </div>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Add Staff Member</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label>Name</label>
+            <Input {...register("name")} />
+            {errors.name && <p className="text-red-600">{errors.name.message}</p>}
+          </div>
+          <div>
+            <label>Email</label>
+            <Input {...register("email")} type="email" />
+            {errors.email && <p className="text-red-600">{errors.email.message}</p>}
+          </div>
+          <div>
+            <label>Password</label>
+            <Input {...register("password")} type="password" />
+            {errors.password && (
+              <p className="text-red-600">{errors.password.message}</p>
+            )}
+          </div>
+          <div>
+            <label>Role</label>
+            <Select onValueChange={handleRoleChange} value={role || ""}>
+              <SelectTrigger className="w-full" aria-label="Select role">
+                <SelectValue placeholder="Select role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="manager">Manager</SelectItem>
+                <SelectItem value="waiter">Waiter</SelectItem>
+                <SelectItem value="chef">Chef</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.role && <p className="text-red-600">{errors.role.message}</p>}
+          </div>
 
-      {loading && <p>Loading staff...</p>}
-      {error && <p className="text-red-500">Error: {error}</p>}
-
-      <ul>
-        {staffList.map((staff) => (
-          <li key={staff.id} className="mb-2">
-            {staff.name} — {staff.role} — {staff.email}
-          </li>
-        ))}
-      </ul>
-
-      <AddStaffDialog
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        onAddSuccess={() => dispatch(fetchStaff())} // refetch after add
-      />
-    </div>
+          <DialogFooter>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Adding..." : "Add Staff"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default StaffManagement;
+export default AddStaffDialog;
