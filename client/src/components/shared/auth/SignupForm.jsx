@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 // Validation schema
 const formSchema = z
@@ -34,7 +35,7 @@ const formSchema = z
 
 const SignupForm = () => {
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,6 +47,8 @@ const SignupForm = () => {
   });
 
   const onSubmit = async (values) => {
+    console.log("values", values)
+      setLoading(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/register`, {
         method: "POST",
@@ -75,7 +78,9 @@ const SignupForm = () => {
       toast.error("Registration Failed", {
         description: error.message,
       });
-    }
+    }finally {
+    setLoading(false); // ALWAYS stop loading
+  }
   };
   
   
@@ -157,8 +162,9 @@ const SignupForm = () => {
 <Button
   type="submit"
   className="mt-10 cursor-pointer bg-green-800 hover:bg-green-900 text-white w-96"
+  disabled={loading}
 >
-  Submit
+  {loading ? "Registring..." : "Register"}
 </Button>
 
         </form>

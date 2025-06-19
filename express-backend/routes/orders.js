@@ -58,7 +58,7 @@ const authMiddleware = require("../middlewares/authmiddleware");
 //   }
 // });
 
-router.get('/user-waiter', async (req, res) => {
+router.get('/user-waiter',authMiddleware, async (req, res) => {
   try {
     const { page = 1, limit = 10, userId } = req.query;
 

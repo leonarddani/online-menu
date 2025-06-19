@@ -1,10 +1,11 @@
 const express = require("express");
 const pool = require("../config/db"); // Assuming you are using PostgreSQL
+const authMiddleware = require("../middlewares/authmiddleware");
 const router = express.Router();
 
 // GET /api/tables
 // Get all tables without pagination or limits
-router.get("/", async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   try {
     // Build query to fetch all tables without any filters or pagination
     const query = "SELECT id, table_number, capacity, status, created_at, updated_at FROM tables ORDER BY table_number ASC";
@@ -22,7 +23,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post('/:id/free', async (req, res) => {
+router.post('/:id/free',authMiddleware, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -57,7 +58,7 @@ router.post('/:id/free', async (req, res) => {
 
 //Update table status (Free / Occupied)
 
-router.put('/api/tables/:id/status', async (req, res) => {
+router.put('/api/tables/:id/status',authMiddleware, async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
@@ -73,7 +74,7 @@ router.put('/api/tables/:id/status', async (req, res) => {
   }
 });
 
-router.post('/:id/seat', async (req, res) => {
+router.post('/:id/seat',authMiddleware, async (req, res) => {
   const { id } = req.params;
   const { user_id } = req.body;  // Assuming the user seating the guests (like a waiter) is passing their ID
   
@@ -118,7 +119,7 @@ router.post('/:id/seat', async (req, res) => {
 
 
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id",authMiddleware, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -132,7 +133,7 @@ router.delete("/delete/:id", async (req, res) => {
 });
 
 // POST /api/tables/create
-router.post("/create", async (req, res) => {
+router.post("/create",authMiddleware, async (req, res) => {
   const { table_number, capacity, status } = req.body;
 
   // Validation minimal

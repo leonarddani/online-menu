@@ -1,12 +1,21 @@
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogHeader, DialogFooter, DialogTitle, DialogContent } from '@/components/ui/dialog';
-import { Trash } from 'lucide-react';
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogContent,
+} from "@/components/ui/dialog";
+import { Trash } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { fetchTables } from "@/store/tablesSlice";
 
-const DeleteButton = ({ itemId, itemName, resource = "item", endpoint, onDeleted }) => {
+const DeleteButton = ({ itemId, itemName, resource = "item" }) => {
   const [showDialog, setShowDialog] = useState(false);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleDeleteConfirm = async () => {
     setLoading(true);
@@ -16,8 +25,8 @@ const DeleteButton = ({ itemId, itemName, resource = "item", endpoint, onDeleted
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
 
       if (!response.ok) {
@@ -25,10 +34,10 @@ const DeleteButton = ({ itemId, itemName, resource = "item", endpoint, onDeleted
       }
 
       toast.success(`${resource[0].toUpperCase() + resource.slice(1)} deleted`, {
-        description: `${resource[0].toUpperCase() + resource.slice(1)} "${itemName}" has been successfully deleted.`
+        description: `${resource[0].toUpperCase() + resource.slice(1)} "${itemName}" has been successfully deleted.`,
       });
 
-      onDeleted?.(); // only call if defined
+      dispatch(fetchTables()); // 🔁 refresh list
       setShowDialog(false);
     } catch (error) {
       toast.error("Error", { description: error.message });
@@ -46,8 +55,8 @@ const DeleteButton = ({ itemId, itemName, resource = "item", endpoint, onDeleted
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete {resource}</DialogTitle>
-            <p className='text-muted-foreground'>
-              Are you sure you want to delete <span className='text-primary'>{itemName}</span> {resource}?
+            <p className="text-muted-foreground">
+              Are you sure you want to delete <span className="text-primary">{itemName}</span> {resource}?
             </p>
           </DialogHeader>
           <DialogFooter>

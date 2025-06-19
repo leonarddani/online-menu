@@ -22,7 +22,7 @@ router.post("/register", async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: role.toLowerCase(), // normalize role
+      role: role, // normalize role
     });
 
     res.status(201).json(newUser);

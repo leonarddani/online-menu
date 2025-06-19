@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../config/db");
+const authMiddleware = require("../middlewares/authmiddleware");
 
 // In-memory carts per tableId (simple solution)
 let carts = {};
@@ -106,7 +107,7 @@ router.patch("/:tableId/cart/:itemId", (req, res) => {
 
 
 // --- POST place order (save to DB) ---
-router.post("/:tableId/order", async (req, res) => {
+router.post("/:tableId/order",authMiddleware, async (req, res) => {
   const { tableId } = req.params;
   const { cart, userId } = req.body; // userId from frontend/session
 
@@ -152,7 +153,7 @@ router.post("/:tableId/order", async (req, res) => {
 });
 
 // --- Optional: GET orders by table ---
-router.get("/:tableId/orders", async (req, res) => {
+router.get("/:tableId/orders",authMiddleware, async (req, res) => {
   const { tableId } = req.params;
 
   try {

@@ -28,12 +28,14 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
 
   const onSubmit = async (values) => {
+      setLoading(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/auth/login`, {
         method: "POST",
@@ -60,7 +62,9 @@ const LoginForm = () => {
       navigate(`/dashboard/${role}`);
     } catch (error) {
       setErrorMessage(error.message || "Something went wrong!");
-    }
+    }finally {
+    setLoading(false); // ALWAYS stop loading
+  }
   };
 
   return (
@@ -106,12 +110,14 @@ const LoginForm = () => {
         )}
 
         {/* Submit */}
-        <Button
-          type="submit"
-          className="mt-10 cursor-pointer bg-green-800 hover:bg-green-900 text-white w-full"
-        >
-          Login
-        </Button>
+       <Button
+  type="submit"
+  className="mt-10 cursor-pointer bg-green-800 hover:bg-green-900 text-white w-full"
+  disabled={loading}
+>
+  {loading ? "Logging in..." : "Login"}
+</Button>
+
       </form>
     </Form>
   );

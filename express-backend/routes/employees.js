@@ -138,7 +138,7 @@ router.delete(
 
 // POST /api/employees
 router.post(
-  "/create",
+  "/create",authMiddleware,
   async (req, res) => {
     // Check validation errors
     const errors = validationResult(req);

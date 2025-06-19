@@ -1,0 +1,13 @@
+port=8095
+
+DB_HOST=interchange.proxy.rlwy.net
+
+DB_PORT=52662
+
+DB_USER=postgres
+
+DB_PASSWORD=dOkYQvfxsaOPovLoLtaIYBBHVPtqSMPq
+
+DB_NAME=railway
+
+JWT_SECRET=mmks1234
