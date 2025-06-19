@@ -11,10 +11,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
 
 const EditStaffDialog = ({ open, onOpenChange, staff, onSave }) => {
   const [role, setRole] = useState(staff?.role || "");
   const [loading, setLoading] = useState(false);
+  const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
     if (!open) {
@@ -24,12 +26,13 @@ const EditStaffDialog = ({ open, onOpenChange, staff, onSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!staff) return;
+    if (!role) {
+      toast.error("Role is required");
+      return;
+    }
 
     setLoading(true);
-    const token = localStorage.getItem("token");
-
     try {
       const res = await fetch(`${import.meta.env.VITE_BASE_URL}/employees/${staff.id}`, {
         method: "PATCH",
@@ -67,7 +70,7 @@ const EditStaffDialog = ({ open, onOpenChange, staff, onSave }) => {
         <DialogHeader>
           <DialogTitle>Edit Staff Member</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" disabled={loading}>
           <div>
             <Label>Name</Label>
             <Input type="text" value={staff?.name || ""} disabled />
@@ -80,8 +83,8 @@ const EditStaffDialog = ({ open, onOpenChange, staff, onSave }) => {
 
           <div>
             <Label>Role</Label>
-            <Select onValueChange={setRole} value={role}>
-              <SelectTrigger className="w-full" disabled={loading}>
+            <Select onValueChange={setRole} value={role} disabled={loading}>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
               <SelectContent>

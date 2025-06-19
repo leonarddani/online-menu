@@ -9,7 +9,7 @@ import {
 import { Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchTables } from "@/store/tablesSlice";
 
 const DeleteButton = ({ itemId, itemName, resource = "item" }) => {
@@ -17,15 +17,18 @@ const DeleteButton = ({ itemId, itemName, resource = "item" }) => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
+  // get token from redux
+  const token = useSelector((state) => state.auth.token);
+
   const handleDeleteConfirm = async () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/tables/delete/${itemId}`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/tables/${itemId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -37,7 +40,7 @@ const DeleteButton = ({ itemId, itemName, resource = "item" }) => {
         description: `${resource[0].toUpperCase() + resource.slice(1)} "${itemName}" has been successfully deleted.`,
       });
 
-      dispatch(fetchTables()); // 🔁 refresh list
+      dispatch(fetchTables()); // refresh list
       setShowDialog(false);
     } catch (error) {
       toast.error("Error", { description: error.message });

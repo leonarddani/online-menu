@@ -9,41 +9,45 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Edit, Trash, Users } from "lucide-react";
+import { Edit, Users } from "lucide-react";
 import EditStaffDialog from "./EditStaffDialog";
 import DeleteStaffButton from "./DeleteStaffButton";
+import { useSelector } from "react-redux";
 
-const SaffManagment = () => {
+const StaffManagement = () => {
+  const token = useSelector((state) => state.auth.token);
   const [activeStaff, setActiveStaff] = useState([]);
   const [isEditStaffOpen, setIsEditStaffOpen] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchWaiters = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const token = localStorage.getItem("token"); 
-
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}/employees/staff`, {
-          method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
-        if (!res.ok) throw new Error("Failed to fetch waiters");
+        if (!res.ok) throw new Error("Failed to fetch staff");
 
         const data = await res.json();
         setActiveStaff(data.data);
       } catch (error) {
-        console.error("Error fetching waiters:", error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchWaiters();
-  }, []);
+    if (token) fetchWaiters();
+  }, [token]);
 
-  // This is the new function to handle saving edited staff data
   const handleSaveStaff = (updatedStaff) => {
     setActiveStaff((prev) =>
       prev.map((staff) => (staff.id === updatedStaff.id ? updatedStaff : staff))
@@ -51,72 +55,72 @@ const SaffManagment = () => {
     setIsEditStaffOpen(false);
   };
 
-  const handleDeleteStaff = (id) => {
-    setActiveStaff((prev) => prev.filter((staff) => staff.id !== id));
-  };
-
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Active staff</CardTitle>
-        
+        <CardTitle>Active Staff</CardTitle>
         <CardDescription>Staff currently working at your restaurant</CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {activeStaff.length === 0 ? (
+        {loading && <p>Loading staff...</p>}
+        {error && <p className="text-red-600">Error: {error}</p>}
+        {!loading && !error && (
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
-                  No active waiters found
-                </TableCell>
+                <TableHead>Name</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-            ) : (
-              activeStaff.map((member) => (
-                <TableRow key={member.id}>
-                  <TableCell className="font-medium">{member.name}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4" />
-                      <span>{member.role}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{member.email}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedStaff(member);
-                          setIsEditStaffOpen(true);
-                        }}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-
-                     
-                      <DeleteStaffButton
-  staff={member}
-  onDeleteSuccess={(id) => setActiveStaff(prev => prev.filter(s => s.id !== id))}
-/>
-                    </div>
+            </TableHeader>
+            <TableBody>
+              {activeStaff.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
+                    No active staff found
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                activeStaff.map((member) => (
+                  <TableRow key={member.id}>
+                    <TableCell className="font-medium">{member.name}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        <span>{member.role}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{member.email}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedStaff(member);
+                            setIsEditStaffOpen(true);
+                          }}
+                          aria-label={`Edit ${member.name}`}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
 
-        {/* Edit dialog */}
+                        <DeleteStaffButton
+                          staff={member}
+                          onDeleteSuccess={(id) =>
+                            setActiveStaff((prev) => prev.filter((s) => s.id !== id))
+                          }
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        )}
+
         <EditStaffDialog
           open={isEditStaffOpen}
           onOpenChange={setIsEditStaffOpen}
@@ -128,4 +132,4 @@ const SaffManagment = () => {
   );
 };
 
-export default SaffManagment;
+export default StaffManagement;

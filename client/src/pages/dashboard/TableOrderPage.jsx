@@ -18,21 +18,22 @@ import Layout from "@/components/shared/layouts/Layout";
 import { useSelector } from "react-redux";
 
 export default function TableOrderPage() {
-  const { id } = useParams(); // Table id from URL params
+  const { id } = useParams();
   const navigate = useNavigate();
   const [menuItems, setMenuItems] = useState([]);
   const [cart, setCart] = useState([]);
   const [activeTab, setActiveTab] = useState("pizza");
   const user = useSelector((state) => state.auth.user);
-  const reqUserRole = user?.role; // fallback to "waiter" if role is undefined
-
-  // For demo: hardcoded userId; replace with auth user id if available
-  const userId = 1;
+  const token = useSelector((state) => state.auth.token);
+  const reqUserRole = user?.role;
+  const userId = user?.id;
 
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/menu/`);
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/menu/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (!response.ok) throw new Error("Failed to fetch menu");
         const data = await response.json();
         setMenuItems(data);
@@ -43,7 +44,9 @@ export default function TableOrderPage() {
 
     const fetchCart = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/menu/${id}/cart`);
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/menu/${id}/cart`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (!response.ok) throw new Error("Failed to fetch cart");
         const data = await response.json();
         setCart(data);
@@ -54,16 +57,18 @@ export default function TableOrderPage() {
 
     fetchMenu();
     fetchCart();
-  }, [id]);
+  }, [id, token]);
 
-  // Add item to cart
   const addToCart = async (itemId, quantity, notes) => {
     try {
       const response = await fetch(
         `${import.meta.env.VITE_BASE_URL}/menu/${id}/cart`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ itemId, quantity, notes }),
         }
       );
@@ -79,12 +84,14 @@ export default function TableOrderPage() {
     }
   };
 
-  // Remove item from cart
   const removeFromCart = async (itemId) => {
     try {
       const response = await fetch(
         `${import.meta.env.VITE_BASE_URL}/menu/${id}/cart/${itemId}`,
-        { method: "DELETE" }
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
       if (response.ok) {
@@ -98,15 +105,17 @@ export default function TableOrderPage() {
     }
   };
 
-  // Update item quantity in cart
   const updateQuantity = async (itemId, quantity) => {
-    if (quantity < 1) return; // Prevent <1 quantity
+    if (quantity < 1) return;
     try {
       const response = await fetch(
         `${import.meta.env.VITE_BASE_URL}/menu/${id}/cart/${itemId}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ quantity }),
         }
       );
@@ -122,14 +131,16 @@ export default function TableOrderPage() {
     }
   };
 
-  // Update notes for an item
   const updateNotes = async (itemId, notes) => {
     try {
       const response = await fetch(
         `${import.meta.env.VITE_BASE_URL}/menu/${id}/cart/${itemId}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({ notes }),
         }
       );
@@ -145,13 +156,15 @@ export default function TableOrderPage() {
     }
   };
 
-  // Place order
   const placeOrder = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/menu/${id}/order`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cart, userId }), // send userId here
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ cart, userId }),
       });
 
       if (response.ok) {

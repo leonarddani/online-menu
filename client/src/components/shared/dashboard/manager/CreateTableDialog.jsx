@@ -1,4 +1,3 @@
-// src/components/shared/dashboard/manager/CreateTableDialog.jsx
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -23,7 +22,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const formSchema = z.object({
   table_number: z
@@ -37,7 +37,9 @@ const formSchema = z.object({
 });
 
 const CreateTableDialog = ({ isOpen, onOpenChange, onTableCreated }) => {
+  const token = useSelector((state) => state.auth.token);
   const [loading, setLoading] = useState(false);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,6 +47,10 @@ const CreateTableDialog = ({ isOpen, onOpenChange, onTableCreated }) => {
       capacity: undefined,
     },
   });
+
+  useEffect(() => {
+    if (!isOpen) form.reset();
+  }, [isOpen]);
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -55,7 +61,7 @@ const CreateTableDialog = ({ isOpen, onOpenChange, onTableCreated }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
@@ -72,7 +78,7 @@ const CreateTableDialog = ({ isOpen, onOpenChange, onTableCreated }) => {
       });
 
       form.reset();
-      onTableCreated?.(result); // trigger parent to close dialog and maybe refresh data
+      onTableCreated?.(result);
     } catch (error) {
       toast.error("Error", { description: error.message });
     } finally {
@@ -83,7 +89,7 @@ const CreateTableDialog = ({ isOpen, onOpenChange, onTableCreated }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button>
+        <Button disabled={loading}>
           <Plus /> Create new table
         </Button>
       </DialogTrigger>
@@ -107,6 +113,7 @@ const CreateTableDialog = ({ isOpen, onOpenChange, onTableCreated }) => {
                       {...field}
                       value={field.value ?? ""}
                       onChange={(e) => field.onChange(Number(e.target.value))}
+                      disabled={loading}
                     />
                   </FormControl>
                   <FormMessage />
@@ -126,6 +133,7 @@ const CreateTableDialog = ({ isOpen, onOpenChange, onTableCreated }) => {
                       {...field}
                       value={field.value ?? ""}
                       onChange={(e) => field.onChange(Number(e.target.value))}
+                      disabled={loading}
                     />
                   </FormControl>
                   <FormMessage />

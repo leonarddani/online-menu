@@ -9,19 +9,22 @@ import {
 } from "@/components/ui/dialog";
 import { Trash } from "lucide-react";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
 
 const DeleteStaffButton = ({ staff, onDeleteSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
+  const token = useSelector((state) => state.auth.token);
+
   const handleDeleteConfirm = async () => {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem("token");
       const res = await fetch(`${import.meta.env.VITE_BASE_URL}/employees/${staff.id}`, {
         method: "DELETE",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
