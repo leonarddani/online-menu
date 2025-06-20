@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchStaff } from "@/store/staffSlice";
+import { addStaff } from "@/store/staffSlice";
 
 const schema = z.object({
   name: z.string().min(2, "Name required"),
@@ -75,12 +75,9 @@ const AddStaffDialog = ({ open, onOpenChange, onAddSuccess }) => {
       const newStaff = await res.json();
       toast.success("Staff added!");
 
-      // Trigger parent callback (optional)
+      dispatch(addStaff(newStaff)); // optimistic update in Redux
+
       onAddSuccess?.(newStaff);
-
-      // REFRESH STAFF LIST
-      dispatch(fetchStaff());
-
       onOpenChange(false);
     } catch (error) {
       toast.error(error.message);
@@ -96,7 +93,7 @@ const AddStaffDialog = ({ open, onOpenChange, onAddSuccess }) => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label>Name</label>
-            <Input {...register("name")} />
+            <Input {...register("name")} autoFocus />
             {errors.name && <p className="text-red-600">{errors.name.message}</p>}
           </div>
           <div>

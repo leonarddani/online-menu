@@ -8,54 +8,48 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
 import { Edit, Users } from "lucide-react";
 import EditStaffDialog from "./EditStaffDialog";
 import DeleteStaffButton from "./DeleteStaffButton";
-import { useSelector } from "react-redux";
+
+import { useSelector, useDispatch } from "react-redux";
+import { fetchStaff, updateStaff, removeStaff } from "@/store/staffSlice";
 
 const StaffManagement = () => {
-  console.log("Rendering EditStaffDialog");
-
+  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
-  const [activeStaff, setActiveStaff] = useState([]);
+
+  // Use staffList from Redux store, loading and error states
+  const staffList = useSelector((state) => state.staff.staffList);
+  const loading = useSelector((state) => state.staff.loading);
+  const error = useSelector((state) => state.staff.error);
+
   const [isEditStaffOpen, setIsEditStaffOpen] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
+  // Fetch staff on mount or token change
   useEffect(() => {
-    const fetchWaiters = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`${import.meta.env.VITE_BASE_URL}/employees/staff`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    if (token) {
+      dispatch(fetchStaff(token));
+    }
+  }, [token, dispatch]);
 
-        if (!res.ok) throw new Error("Failed to fetch staff");
-
-        const data = await res.json();
-        setActiveStaff(data.data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (token) fetchWaiters();
-  }, [token]);
-
+  // When a staff member is saved in EditStaffDialog
   const handleSaveStaff = (updatedStaff) => {
-    
-    setActiveStaff((prev) =>
-      prev.map((staff) => (staff.id === updatedStaff.id ? updatedStaff : staff))
-    );
+    dispatch(updateStaff(updatedStaff)); // update in Redux store
     setIsEditStaffOpen(false);
+  };
+
+  // When a staff member is deleted successfully in DeleteStaffButton
+  const handleDeleteStaff = (id) => {
+    dispatch(removeStaff(id));
   };
 
   return (
@@ -78,14 +72,14 @@ const StaffManagement = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {activeStaff.length === 0 ? (
+              {staffList.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center py-6 text-muted-foreground">
                     No active staff found
                   </TableCell>
                 </TableRow>
               ) : (
-                activeStaff.map((member) => (
+                staffList.map((member) => (
                   <TableRow key={member.id}>
                     <TableCell className="font-medium">{member.name}</TableCell>
                     <TableCell>
@@ -111,9 +105,7 @@ const StaffManagement = () => {
 
                         <DeleteStaffButton
                           staff={member}
-                          onDeleteSuccess={(id) =>
-                            setActiveStaff((prev) => prev.filter((s) => s.id !== id))
-                          }
+                          onDeleteSuccess={() => handleDeleteStaff(member.id)}
                         />
                       </div>
                     </TableCell>

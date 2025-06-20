@@ -1,12 +1,11 @@
 // src/store/staffSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// Async thunk to fetch staff from API
+// Async thunk to fetch all staff
 export const fetchStaff = createAsyncThunk(
   "staff/fetchStaff",
-  async (_, { rejectWithValue }) => {
+  async (token, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
       const res = await fetch(`${import.meta.env.VITE_BASE_URL}/employees/staff`, {
         headers: {
           "Content-Type": "application/json",
@@ -33,16 +32,18 @@ const staffSlice = createSlice({
     error: null,
   },
   reducers: {
+    addStaff: (state, action) => {
+      state.staffList.push(action.payload);
+    },
     updateStaff: (state, action) => {
       const updatedStaff = action.payload;
-      const index = state.staffList.findIndex(s => s.id === updatedStaff.id);
+      const index = state.staffList.findIndex((s) => s.id === updatedStaff.id);
       if (index !== -1) {
         state.staffList[index] = updatedStaff;
       }
     },
     removeStaff: (state, action) => {
-      const id = action.payload;
-      state.staffList = state.staffList.filter(s => s.id !== id);
+      state.staffList = state.staffList.filter((s) => s.id !== action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -62,6 +63,6 @@ const staffSlice = createSlice({
   },
 });
 
-export const { updateStaff, removeStaff } = staffSlice.actions;
+export const { addStaff, updateStaff, removeStaff } = staffSlice.actions;
 
 export default staffSlice.reducer;

@@ -168,7 +168,7 @@ export const AllOrders = forwardRef((props, ref) => {
                   <span className="capitalize">{order.user_role || "N/A"}</span>
                 </div>
               </TableCell>
-              <TableCell className="flex text-white">{order.table_number || order.table_id}</TableCell>
+              <TableCell className="flex text-white">{order.table_number}</TableCell>
               <TableCell className="text-right">
                 <div
                   className={`

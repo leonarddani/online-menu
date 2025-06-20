@@ -80,7 +80,7 @@ router.delete("/:tableId/cart/:itemId", (req, res) => {
   res.json({ cart: carts[tableId] });
 });
 
-// --- PATCH update item quantity and notes in cart ---
+// --- PATCH update item in cart ---
 router.patch("/:tableId/cart/:itemId", (req, res) => {
   const { tableId, itemId } = req.params;
   const { quantity, notes } = req.body;
@@ -105,10 +105,10 @@ router.patch("/:tableId/cart/:itemId", (req, res) => {
   res.json({ cart: carts[tableId] });
 });
 
-// --- POST place order (save to DB) ---
+// --- POST place order ---
 router.post("/:tableId/order", authMiddleware, async (req, res) => {
   try {
-    const tableNumber = req.params.tableId; // This is actually table_number
+    const tableNumber = req.params.tableId; // This is table_number
     const { cart, userId } = req.body;
 
     if (!cart || cart.length === 0)
@@ -116,37 +116,37 @@ router.post("/:tableId/order", authMiddleware, async (req, res) => {
     if (!userId)
       return res.status(400).json({ message: "User ID is required" });
 
-    // Convert table_number to actual table.id (PK)
+    // Get table_id from table_number
     const tableRes = await pool.query(
       "SELECT id FROM tables WHERE table_number = $1",
       [tableNumber]
     );
-
     if (tableRes.rows.length === 0)
       return res.status(400).json({ message: "Invalid table number" });
 
     const tableId = tableRes.rows[0].id;
 
-    // Calculate total amount
+    // Calculate total
     const totalAmount = cart.reduce(
       (sum, entry) => sum + entry.item.price * entry.quantity,
       0
     );
 
-    // Insert order
+    // INSERT order (now includes table_number!)
     const insertOrderQuery = `
-      INSERT INTO orders (user_id, table_id, total_amount, status, created_at, updated_at)
-      VALUES ($1, $2, $3, 'pending', NOW(), NOW())
+      INSERT INTO orders (user_id, table_id, table_number, total_amount, status, created_at, updated_at)
+      VALUES ($1, $2, $3, $4, 'pending', NOW(), NOW())
       RETURNING id
     `;
     const orderResult = await pool.query(insertOrderQuery, [
       userId,
       tableId,
+      tableNumber,
       totalAmount,
     ]);
     const orderId = orderResult.rows[0].id;
 
-    // Insert order items
+    // INSERT order items
     const insertOrderItemQuery = `
       INSERT INTO order_items (order_id, menu_item_id, quantity, notes, created_at, updated_at)
       VALUES ($1, $2, $3, $4, NOW(), NOW())
@@ -176,7 +176,6 @@ router.get("/:tableId/orders", authMiddleware, async (req, res) => {
   const tableNumber = req.params.tableId;
 
   try {
-    // Convert table_number to id
     const tableRes = await pool.query(
       "SELECT id FROM tables WHERE table_number = $1",
       [tableNumber]
@@ -188,7 +187,7 @@ router.get("/:tableId/orders", authMiddleware, async (req, res) => {
     const tableId = tableRes.rows[0].id;
 
     const query = `
-      SELECT o.id, o.user_id, o.table_id, o.total_amount, o.status, o.created_at,
+      SELECT o.id, o.user_id, o.table_id, o.table_number, o.total_amount, o.status, o.created_at,
              json_agg(json_build_object(
                'menu_item_id', oi.menu_item_id,
                'quantity', oi.quantity,
