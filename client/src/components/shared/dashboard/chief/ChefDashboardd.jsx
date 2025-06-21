@@ -11,7 +11,7 @@ import {
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 
-export default function ChefDashboardd() {
+export default function  ChefDashboardd() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -50,7 +50,7 @@ export default function ChefDashboardd() {
   async function updateStatus(orderId, newStatus) {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/chef/orders/${orderId}/status`,
+        `${import.meta.env.VITE_BASE_URL}/chef/${orderId}/status`,
         {
           method: "PATCH",
           headers: {
