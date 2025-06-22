@@ -11,7 +11,7 @@ import {
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 
-export default function ChefDashboardd() {
+export default function  ChefDashboardd() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -50,7 +50,7 @@ export default function ChefDashboardd() {
   async function updateStatus(orderId, newStatus) {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/chef/orders/${orderId}/status`,
+        `${import.meta.env.VITE_BASE_URL}/chef/${orderId}/status`,
         {
           method: "PATCH",
           headers: {
@@ -110,16 +110,16 @@ export default function ChefDashboardd() {
           <CardFooter className="flex gap-2">
             {order.status === "pending" && (
               <Button
-                onClick={() => updateStatus(order.order_id, "in_progress")}
-                variant="primary"
+                onClick={() => updateStatus(order.order_id, "preparing")}
+                
               >
                 Mark In Progress
               </Button>
             )}
-            {order.status === "in_progress" && (
+            {order.status === "preparing" && (
               <Button
-                onClick={() => updateStatus(order.order_id, "completed")}
-                variant="success"
+                onClick={() => updateStatus(order.order_id, "ready")}
+                
               >
                 Mark Completed
               </Button>

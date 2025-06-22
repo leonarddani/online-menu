@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import Header from '@/components/shared/dashboard/Header';
-import { AllOrders } from '@/components/shared/dashboard/AllOrders';
+import { AllOrders } from '@/components/shared/dashboard/orders/AllOrders';
 import Layout from '@/components/shared/layouts/Layout';
 import { Button } from '@/components/ui/button';
 

@@ -35,7 +35,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/tables", tablesRoutes);
 app.use("/api/menu", menuRoutes);
-app.use("/api/chief", chiefRoutes);
+app.use("/api/chef", chiefRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api/employees", employeesRoutes);
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import Header from '@/components/shared/dashboard/Header'
 import Layout from '@/components/shared/layouts/Layout'
-import ChefDashboardd from '@/pages/dashboard/TablesPage'
+import ChefDashashboardd from '@/components/shared/dashboard/chief/ChefDashboardd'
 
 
 function ChefDashboard() {

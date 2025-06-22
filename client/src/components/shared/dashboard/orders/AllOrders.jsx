@@ -19,6 +19,47 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChefHat, User2 } from "lucide-react";
 import { useSelector } from "react-redux";
+import { toast } from "sonner";
+
+// --- CancelOrderButton Component ---
+const CancelOrderButton = ({ orderId, status, onCancel }) => {
+  const token = useSelector((state) => state.auth.token);
+
+  const handleCancel = async () => {
+    if (!token) return;
+
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BASE_URL}/orders/${orderId}/cancel`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Order cancelled successfully");
+      onCancel(); // refetch
+    } catch (err) {
+      console.error("Failed to cancel order:", err);
+      toast.error("Failed to cancel order");
+    }
+  };
+
+  if (status === "cancelled") return null;
+
+  return (
+    <Button
+      variant="destructive"
+      size="sm"
+      disabled={status === "in progress"}
+      onClick={handleCancel}
+    >
+      Cancel
+    </Button>
+  );
+};
+// --- End CancelOrderButton Component ---
 
 export const AllOrders = forwardRef((props, ref) => {
   const token = useSelector((state) => state.auth.token);
@@ -47,7 +88,6 @@ export const AllOrders = forwardRef((props, ref) => {
       });
 
       setOrders(res.data.orders);
-      // Adjust if your API response uses res.data.pagination.totalPages
       setTotalPages(res.data.pagination?.totalPages || 1);
     } catch (err) {
       console.error("Failed to fetch orders:", err);
@@ -92,11 +132,7 @@ export const AllOrders = forwardRef((props, ref) => {
       const csvContent = [
         csvHeaders.join(","),
         ...csvRows.map((row) =>
-          row
-            .map((cell) =>
-              `"${(cell ?? "").toString().replace(/"/g, '""')}"`
-            )
-            .join(",")
+          row.map((cell) => `"${(cell ?? "").toString().replace(/"/g, '""')}"`).join(",")
         ),
       ].join("\n");
 
@@ -141,6 +177,7 @@ export const AllOrders = forwardRef((props, ref) => {
             <TableHead>Table</TableHead>
             <TableHead className="text-right">Status</TableHead>
             <TableHead className="text-right text-2xl">Total</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -170,20 +207,33 @@ export const AllOrders = forwardRef((props, ref) => {
               </TableCell>
               <TableCell className="flex text-white">{order.table_number}</TableCell>
               <TableCell className="text-right">
-                <div
-                  className={`
-                    inline-block px-2 py-1 rounded-md border font-medium capitalize
-                    ${order.status === "completed" ? "border-green-500 text-green-600" : ""}
-                    ${order.status === "pending" ? "border-yellow-500 text-yellow-600" : ""}
-                    ${order.status === "cancelled" ? "border-red-500 text-red-600" : ""}
-                  `}
-                >
-                  {order.status}
+                <div className="flex flex-col items-end gap-2">
+                  <div
+                    className={`
+                      inline-block px-2 py-1 rounded-md border font-medium capitalize
+                       ${order.status === "pending" ? "border-yellow-500 text-yellow-600" : ""}
+                        ${order.status === "cancelled" ? "border-red-500 text-red-600" : ""}
+                       ${order.status === "preparing" ? "border-blue-500 text-blue-600" : ""}
+                       ${order.status === "ready" ? "border-green-500 text-green-600" : ""}
+                    `}
+                  >
+                    {order.status}
+                  </div>
+                 
                 </div>
               </TableCell>
               <TableCell className="text-right text-white">${order.total_amount}</TableCell>
+              <TableCell className="text-right text-white">
+                 <CancelOrderButton
+                    orderId={order.id}
+                    status={order.status}
+                    onCancel={fetchOrders}
+                  />
+              </TableCell>
             </TableRow>
           ))}
+
+         
         </TableBody>
         <TableFooter>
           <TableRow>
