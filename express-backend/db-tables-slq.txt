@@ -1,0 +1,9 @@
+-- First, drop the old constraint
+ALTER TABLE orders DROP CONSTRAINT orders_table_id_fkey;
+
+-- Re-add it with ON DELETE CASCADE
+ALTER TABLE orders
+ADD CONSTRAINT orders_table_id_fkey
+FOREIGN KEY (table_id)
+REFERENCES tables(id)
+ON DELETE CASCADE;

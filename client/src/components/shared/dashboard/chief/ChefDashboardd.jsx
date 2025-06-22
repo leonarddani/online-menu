@@ -110,16 +110,16 @@ export default function  ChefDashboardd() {
           <CardFooter className="flex gap-2">
             {order.status === "pending" && (
               <Button
-                onClick={() => updateStatus(order.order_id, "in_progress")}
-                variant="primary"
+                onClick={() => updateStatus(order.order_id, "preparing")}
+                
               >
                 Mark In Progress
               </Button>
             )}
-            {order.status === "in_progress" && (
+            {order.status === "preparing" && (
               <Button
-                onClick={() => updateStatus(order.order_id, "completed")}
-                variant="success"
+                onClick={() => updateStatus(order.order_id, "ready")}
+                
               >
                 Mark Completed
               </Button>

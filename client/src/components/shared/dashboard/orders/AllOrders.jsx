@@ -177,6 +177,7 @@ export const AllOrders = forwardRef((props, ref) => {
             <TableHead>Table</TableHead>
             <TableHead className="text-right">Status</TableHead>
             <TableHead className="text-right text-2xl">Total</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -210,24 +211,29 @@ export const AllOrders = forwardRef((props, ref) => {
                   <div
                     className={`
                       inline-block px-2 py-1 rounded-md border font-medium capitalize
-                      ${order.status === "completed" ? "border-green-500 text-green-600" : ""}
-                      ${order.status === "pending" ? "border-yellow-500 text-yellow-600" : ""}
-                      ${order.status === "cancelled" ? "border-red-500 text-red-600" : ""}
-                      ${order.status === "in progress" ? "border-blue-500 text-blue-600" : ""}
+                       ${order.status === "pending" ? "border-yellow-500 text-yellow-600" : ""}
+                        ${order.status === "cancelled" ? "border-red-500 text-red-600" : ""}
+                       ${order.status === "preparing" ? "border-blue-500 text-blue-600" : ""}
+                       ${order.status === "ready" ? "border-green-500 text-green-600" : ""}
                     `}
                   >
                     {order.status}
                   </div>
-                  <CancelOrderButton
+                 
+                </div>
+              </TableCell>
+              <TableCell className="text-right text-white">${order.total_amount}</TableCell>
+              <TableCell className="text-right text-white">
+                 <CancelOrderButton
                     orderId={order.id}
                     status={order.status}
                     onCancel={fetchOrders}
                   />
-                </div>
               </TableCell>
-              <TableCell className="text-right text-white">${order.total_amount}</TableCell>
             </TableRow>
           ))}
+
+         
         </TableBody>
         <TableFooter>
           <TableRow>

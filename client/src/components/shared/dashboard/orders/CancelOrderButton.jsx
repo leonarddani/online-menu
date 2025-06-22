@@ -1,15 +1,17 @@
-// components/CancelOrderButton.jsx
 import React from "react";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { toast } from "sonner"; // optional for notifications
+import { toast } from "sonner";
 import { useSelector } from "react-redux";
 
 const CancelOrderButton = ({ orderId, status, onCancel }) => {
   const token = useSelector((state) => state.auth.token);
 
   const handleCancel = async () => {
-    if (!token) return;
+    if (!token) {
+      toast.error("You must be logged in to cancel orders.");
+      return;
+    }
 
     try {
       await axios.put(
@@ -29,16 +31,11 @@ const CancelOrderButton = ({ orderId, status, onCancel }) => {
     }
   };
 
-  // ❌ Don't show button for these statuses
-  if (status === "cancelled" || status === "completed") return null;
+  // Show button ONLY if status is "pending"
+  if (status !== "pending") return null;
 
   return (
-    <Button
-      variant="destructive"
-      size="sm"
-      disabled={status === "in progress"}
-      onClick={handleCancel}
-    >
+    <Button variant="destructive" size="sm" onClick={handleCancel}>
       Cancel
     </Button>
   );
