@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChefHat, User2 } from "lucide-react";
 import { useSelector } from "react-redux";
+import { Switch } from "@/components/ui/switch"; // ✅ import për Switch
 
 export const AllOrders = forwardRef((props, ref) => {
   const token = useSelector((state) => state.auth.token);
@@ -47,7 +48,6 @@ export const AllOrders = forwardRef((props, ref) => {
       });
 
       setOrders(res.data.orders);
-      // Adjust if your API response uses res.data.pagination.totalPages
       setTotalPages(res.data.pagination?.totalPages || 1);
     } catch (err) {
       console.error("Failed to fetch orders:", err);
@@ -123,8 +123,17 @@ export const AllOrders = forwardRef((props, ref) => {
     fetchOrders();
   }, [fetchOrders]);
 
-  if (loading) return <div className="p-4 text-center">Loading orders...</div>;
-  if (error) return <div className="p-4 text-center text-red-600">{error}</div>;
+  // ✅ Loading me Switch
+  if (loading)
+    return (
+      <div className="p-6 flex flex-col items-center justify-center gap-2">
+        <Switch checked disabled className="scale-150 opacity-70 animate-pulse" />
+        <span className="text-sm text-muted-foreground">Loading orders...</span>
+      </div>
+    );
+
+  if (error)
+    return <div className="p-4 text-center text-red-600">{error}</div>;
 
   return (
     <div className="p-4">
@@ -168,20 +177,22 @@ export const AllOrders = forwardRef((props, ref) => {
                   <span className="capitalize">{order.user_role || "N/A"}</span>
                 </div>
               </TableCell>
-              <TableCell className="flex text-white">{order.table_number || order.table_id}</TableCell>
+              <TableCell className="flex text-white">
+                {order.table_number || order.table_id}
+              </TableCell>
               <TableCell className="text-right">
                 <div
-                  className={`
-                    inline-block px-2 py-1 rounded-md border font-medium capitalize
+                  className={`inline-block px-2 py-1 rounded-md border font-medium capitalize
                     ${order.status === "completed" ? "border-green-500 text-green-600" : ""}
                     ${order.status === "pending" ? "border-yellow-500 text-yellow-600" : ""}
-                    ${order.status === "cancelled" ? "border-red-500 text-red-600" : ""}
-                  `}
+                    ${order.status === "cancelled" ? "border-red-500 text-red-600" : ""}`}
                 >
                   {order.status}
                 </div>
               </TableCell>
-              <TableCell className="text-right text-white">${order.total_amount}</TableCell>
+              <TableCell className="text-right text-white">
+                ${order.total_amount}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

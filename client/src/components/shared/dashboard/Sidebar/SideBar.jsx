@@ -32,6 +32,7 @@ export default function Sidebar() {
       label: "Settings",
       icon: Settings,
       href: `/dashboard/${role}/settings`,
+
     },
   ];
 

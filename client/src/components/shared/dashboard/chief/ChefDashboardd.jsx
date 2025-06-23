@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
+import ChefOrders from "@/pages/dashboard/chef/CherOrders";
 
 export default function ChefDashboardd() {
   const [orders, setOrders] = useState([]);
