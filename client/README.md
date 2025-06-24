@@ -21,3 +21,10 @@ The app simplifies restaurant operations by offering separate dashboards and too
 - **Backend**: Node.js (or Supabase if applicable)
 - **Database**: PostgreSQL
 - **API**: REST API
+
+
+masi mabrosh pune 
+
+git add .
+git commit -m "mesazhi"
+git push origin lona/loading

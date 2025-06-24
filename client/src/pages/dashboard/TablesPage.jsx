@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react"; // Spinner icon
 
 import {
   Tabs,
@@ -20,7 +21,6 @@ import {
   deleteTable,
 } from "@/store/tablesSlice";
 
-// Room name mapping
 const roomNames = {
   "1": "Main Dining",
   "2": "Terrace",
@@ -41,7 +41,6 @@ const TablesPage = () => {
   const [guestCount, setGuestCount] = useState("2");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
-  // Redirect to login if not authenticated
   useEffect(() => {
     if (!user) {
       toast.error("Please log in to access this page");
@@ -49,7 +48,6 @@ const TablesPage = () => {
     }
   }, [user, navigate]);
 
-  // Fetch tables on mount
   useEffect(() => {
     if (user) dispatch(fetchTables());
   }, [user, dispatch]);
@@ -90,7 +88,14 @@ const TablesPage = () => {
   const occupiedTables = tables.filter((t) => t.status === "occupied");
   const reservedTables = tables.filter((t) => t.status === "reserved");
 
-  if (loading) return <p>Loading tables...</p>;
+  // Spinner loading
+  if (loading)
+    return (
+      <div className="flex justify-center items-center py-10">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
