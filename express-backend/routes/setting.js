@@ -3,11 +3,11 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const pool = require("../config/db");
 
-const auth = require("../middlewares/authmiddleware"); // middleware që vendos req.user.id
+const authMiddleware = require("../middlewares/authmiddleware");
 
 // PUT /api/settings
-router.put("/", auth, async (req, res) => {
-  const { fullName, email, phone, password } = req.body;
+router.put("/", authMiddleware, async (req, res) => {
+  const { name, email,  password } = req.body;
   const userId = req.user.id;
 
   try {
@@ -22,19 +22,14 @@ router.put("/", auth, async (req, res) => {
     const values = [];
     let paramIndex = 1;
 
-    if (fullName) {
-      updates.push(`full_name = $${paramIndex++}`);
-      values.push(fullName);
+    if (name) {
+      updates.push(`name = $${paramIndex++}`);
+      values.push(name);
     }
 
     if (email) {
       updates.push(`email = $${paramIndex++}`);
       values.push(email);
-    }
-
-    if (phone) {
-      updates.push(`phone = $${paramIndex++}`);
-      values.push(phone);
     }
 
     if (password) {
