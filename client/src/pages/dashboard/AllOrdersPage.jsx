@@ -16,7 +16,7 @@ const AllOrdersPage = () => {
   return (
     <Layout>
       <Header title="Orders" subtitle="Here u can see all orders in one place.">
-        <Button variant="outline" onClick={handleDownloadCSV}>
+        <Button  onClick={handleDownloadCSV}>
           Download CSV
         </Button>
       </Header>
