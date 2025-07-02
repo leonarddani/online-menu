@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
+import { Loader2 } from "lucide-react";
 
 export default function  ChefDashboardd() {
   const [orders, setOrders] = useState([]);
@@ -73,9 +74,14 @@ export default function  ChefDashboardd() {
     }
   }
 
-  if (loading) {
-    return <div className="p-4 text-center">Loading orders...</div>;
-  }
+ // Spinner loading
+  if (loading)
+    return (
+      <div className="flex justify-center items-center py-10">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+
 
   if (orders.length === 0) {
     return <div className="p-4 text-center">No pending orders</div>;
