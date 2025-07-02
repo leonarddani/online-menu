@@ -19,6 +19,7 @@ import {
   freeTable,
   deleteTable,
 } from "@/store/tablesSlice";
+import { Loader2 } from "lucide-react";
 
 // Room name mapping
 const roomNames = {
@@ -90,7 +91,13 @@ const TablesPage = () => {
   const occupiedTables = tables.filter((t) => t.status === "occupied");
   const reservedTables = tables.filter((t) => t.status === "reserved");
 
-  if (loading) return <p>Loading tables...</p>;
+// Spinner loading
+  if (loading)
+    return (
+      <div className="flex justify-center items-center py-10">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (

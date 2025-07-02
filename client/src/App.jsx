@@ -21,6 +21,7 @@ import TablesPage from "@/pages/dashboard/TablesPage";
 import AllOrdersPage from "@/pages/dashboard/AllOrdersPage";
 import StaffPage from "./pages/dashboard/manager/StaffPage";
 import ChefDashboard from "@/pages/dashboard/chef/ChefDashboard";
+import Setting from "./components/shared/dashboard/setting";
 // import TablesPage from "./pages/dashboard/waiter/TablesPage";
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
           <Route path="/dashboard/client" element={<ClientDashboardPage />} />
            <Route path="/dashboard/client/tables" element={<TablesPage />} /> 
           <Route path="/dashboard/client/tables/:id" element={<TableOrderPage />} />
+          <Route path="/dashboard/client/settings" element={<Setting />} />
         </Route>
 
         {/* Private: Manager */}
@@ -46,6 +48,7 @@ function App() {
            <Route path="/dashboard/manager/staff" element={<StaffPage />} />
            <Route path="/dashboard/manager/tables/:id" element={<TableOrderPage />} />
            <Route path="/dashboard/manager/orders" element={<AllOrdersPage />} /> 
+           <Route path="/dashboard/manager/settings" element={<Setting />} /> 
         </Route>
 
         {/* Private: Waiter */}
@@ -54,11 +57,13 @@ function App() {
            <Route path="/dashboard/waiter/tables" element={<TablesPage />} /> 
            <Route path="/dashboard/waiter/tables/:id" element={<TableOrderPage />} />
            <Route path="/dashboard/waiter/orders" element={<AllOrdersPage />} /> 
+           <Route path="/dashboard/waiter/settings" element={<Setting />} /> 
         </Route>
 
         {/* Private: Chef */}
         <Route element={<PrivateRoute allowedRoles={["chef"]} />}>
           <Route path="/dashboard/chef" element={<ChefDashboard />} />
+          <Route path="/dashboard/chef.settings" element={<Setting />} />
         </Route>
       </Routes>
       <Toaster />

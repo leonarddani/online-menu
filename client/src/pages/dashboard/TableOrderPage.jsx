@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Minus, Plus, Trash } from "lucide-react";
 import Layout from "@/components/shared/layouts/Layout";
 import { useSelector } from "react-redux";
+import { ButtonToolbar } from "react-bootstrap";
 
 export default function TableOrderPage() {
   const { id } = useParams();
@@ -196,12 +197,16 @@ export default function TableOrderPage() {
 </p>
 
 
-<Button>dffd</Button>
+
         </div>
-        <Button variant="outline" onClick={() => navigate(-1)}>
+        <div>
+        <Button onClick={() => navigate(-1)}>
           Back to Tables
         </Button>
-
+        {/* <Button>
+         Add an Item
+        </Button> */}
+</div>
        
       </div>
  

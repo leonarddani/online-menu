@@ -17,7 +17,7 @@ import {
   TableFooter,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { ChefHat, User2 } from "lucide-react";
+import { ChefHat, User2, Loader2 } from "lucide-react"; // Loader2 shtuar
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
@@ -159,14 +159,19 @@ export const AllOrders = forwardRef((props, ref) => {
     fetchOrders();
   }, [fetchOrders]);
 
-  if (loading) return <div className="p-4 text-center">Loading orders...</div>;
+  // --- Spinner Loading ---
+  if (loading)
+    return (
+      <div className="flex justify-center items-center py-10">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+
   if (error) return <div className="p-4 text-center text-red-600">{error}</div>;
 
   return (
     <div className="p-4">
-      <Button onClick={handleDownloadCSV} className="mb-4">
-        Download CSV
-      </Button>
+      
       <Table>
         <TableCaption>A list of recent orders.</TableCaption>
         <TableHeader>
@@ -209,31 +214,29 @@ export const AllOrders = forwardRef((props, ref) => {
               <TableCell className="text-right">
                 <div className="flex flex-col items-end gap-2">
                   <div
-                    className={`
-                      inline-block px-2 py-1 rounded-md border font-medium capitalize
-                       ${order.status === "pending" ? "border-yellow-500 text-yellow-600" : ""}
-                        ${order.status === "cancelled" ? "border-red-500 text-red-600" : ""}
-                       ${order.status === "preparing" ? "border-blue-500 text-blue-600" : ""}
-                       ${order.status === "ready" ? "border-green-500 text-green-600" : ""}
+                    className={`inline-block px-2 py-1 rounded-md border font-medium capitalize
+                      ${order.status === "pending" ? "border-yellow-500 text-yellow-600" : ""}
+                      ${order.status === "cancelled" ? "border-red-500 text-red-600" : ""}
+                      ${order.status === "preparing" ? "border-blue-500 text-blue-600" : ""}
+                      ${order.status === "ready" ? "border-green-500 text-green-600" : ""}
                     `}
                   >
                     {order.status}
                   </div>
-                 
                 </div>
               </TableCell>
-              <TableCell className="text-right text-white">${order.total_amount}</TableCell>
               <TableCell className="text-right text-white">
-                 <CancelOrderButton
-                    orderId={order.id}
-                    status={order.status}
-                    onCancel={fetchOrders}
-                  />
+                ${order.total_amount}
+              </TableCell>
+              <TableCell className="text-right text-white">
+                <CancelOrderButton
+                  orderId={order.id}
+                  status={order.status}
+                  onCancel={fetchOrders}
+                />
               </TableCell>
             </TableRow>
           ))}
-
-         
         </TableBody>
         <TableFooter>
           <TableRow>
