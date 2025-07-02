@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner"; // ✅ import sonner
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,19 +20,17 @@ function Setting() {
     password: "",
   });
 
-  const [message, setMessage] = useState("");
-
   const handleChange = (e) => {
     setForm({ ...form, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = async () => {
     try {
-      const res = await fetch("${import.meta.env.VITE_BASE_URL}/settings/", {
+      const res = await fetch("https://online-menu-ck8v.onrender.com/api/settings", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token if using JWT
+          "Authorization": `Bearer ${localStorage.getItem("token")}`, // Ensure token exists
         },
         body: JSON.stringify(form),
       });
@@ -40,9 +39,10 @@ function Setting() {
 
       if (!res.ok) throw new Error(data.message || "Update failed");
 
-      setMessage("Settings updated successfully!");
+      toast.success("Settings updated successfully!");
+      setForm({ ...form, password: "" }); // Optional: clear password
     } catch (err) {
-      setMessage(err.message);
+      toast.error(err.message || "Something went wrong!");
     }
   };
 
@@ -83,7 +83,6 @@ function Setting() {
                 </div>
               </div>
 
-              {/* Phone input - not handled in backend yet */}
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
                 <div className="relative">
@@ -161,10 +160,6 @@ function Setting() {
             Cancel
           </Button>
         </div>
-
-        {message && (
-          <p className="text-sm text-center text-green-400 pt-2">{message}</p>
-        )}
       </div>
     </Layout>
   );
