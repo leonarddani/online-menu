@@ -136,22 +136,15 @@ function Setting() {
           </CardContent>
         </Card>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-4">
+        {/* Action Button */}
+        <div className="pt-4">
           <Button
-            className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+            className="w-full bg-green-600 hover:bg-green-700 text-white"
             onClick={handleSubmit}
             disabled={loading}
           >
             <Save className="mr-2 h-4 w-4" />
             {loading ? "Saving..." : "Save Changes"}
-          </Button>
-          <Button
-            className="flex-1 bg-white text-gray-700 hover:bg-gray-300"
-            onClick={() => setForm({ name: "", email: "", password: "" })}
-            disabled={loading}
-          >
-            Cancel
           </Button>
         </div>
       </div>
