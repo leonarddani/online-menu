@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Mail, Lock, Phone, Save } from "lucide-react";
+import { User, Mail, Lock, Save } from "lucide-react";
 import Layout from "../layouts/Layout";
 
 function Setting() {
@@ -46,7 +46,7 @@ function Setting() {
       if (!res.ok) throw new Error(data.message || "Update failed");
 
       toast.success("Settings updated successfully!", { id: toastId });
-      setForm({ ...form, password: "" }); // clear password
+      setForm({ ...form, password: "" }); // clear password only
     } catch (err) {
       toast.error(err.message || "Something went wrong!", { id: toastId });
     } finally {
@@ -75,34 +75,18 @@ function Setting() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    id="name"
-                    type="text"
-                    value={form.name}
-                    onChange={handleChange}
-                    placeholder="Enter your full name"
-                    className="pl-10 border-gray-200 focus:border-green-500 focus:ring-green-500"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="+1 (555) 000-0000"
-                    className="pl-10 border-gray-200 focus:border-green-500 focus:ring-green-500"
-                    disabled
-                  />
-                </div>
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name</Label>
+              <div className="relative">
+                <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Input
+                  id="name"
+                  type="text"
+                  value={form.name}
+                  onChange={handleChange}
+                  placeholder="Enter your full name"
+                  className="pl-10 border-gray-200 focus:border-green-500 focus:ring-green-500"
+                />
               </div>
             </div>
 
