@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { toast } from "sonner"; // ✅ import sonner
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,17 +20,23 @@ function Setting() {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
+
+    const toastId = toast.loading("Saving your settings...");
+
     try {
       const res = await fetch("https://online-menu-ck8v.onrender.com/api/settings", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`, // Ensure token exists
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify(form),
       });
@@ -39,10 +45,12 @@ function Setting() {
 
       if (!res.ok) throw new Error(data.message || "Update failed");
 
-      toast.success("Settings updated successfully!");
-      setForm({ ...form, password: "" }); // Optional: clear password
+      toast.success("Settings updated successfully!", { id: toastId });
+      setForm({ ...form, password: "" }); // clear password
     } catch (err) {
-      toast.error(err.message || "Something went wrong!");
+      toast.error(err.message || "Something went wrong!", { id: toastId });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -149,13 +157,15 @@ function Setting() {
           <Button
             className="flex-1 bg-green-600 hover:bg-green-700 text-white"
             onClick={handleSubmit}
+            disabled={loading}
           >
             <Save className="mr-2 h-4 w-4" />
-            Save Changes
+            {loading ? "Saving..." : "Save Changes"}
           </Button>
           <Button
             className="flex-1 bg-white text-gray-700 hover:bg-gray-300"
             onClick={() => setForm({ name: "", email: "", password: "" })}
+            disabled={loading}
           >
             Cancel
           </Button>
