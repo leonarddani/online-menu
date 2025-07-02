@@ -10,6 +10,8 @@ const menuRoutes = require("./routes/menu");
 const chiefRoutes = require("./routes/chief");
 const ordersRoutes = require("./routes/orders");
 const employeesRoutes = require("./routes/employees");
+const settingRoutes = require("./routes/setting");
+
 
 const app = express();
 
@@ -38,6 +40,7 @@ app.use("/api/menu", menuRoutes);
 app.use("/api/chef", chiefRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api/employees", employeesRoutes);
+app.use("/api/settings", settingRoutes);
 
 const PORT = process.env.PORT || 8095;
 
